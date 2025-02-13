@@ -1,0 +1,138 @@
+.create-ad-container {
+  display: flex;
+  width: 100%;
+}
+
+.create-ad-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-left: 90px; 
+  margin-top: 20px; 
+  text-align: left;
+  position: relative;
+  top: 20px; 
+}
+
+select {
+  font-size: 14px;
+  padding: 5px 10px; 
+  width: 150px; 
+  border-radius: 5px;
+  border: 1px solid #ccc; 
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+.step-content {
+  margin-left: 270px;
+  padding: 20px;
+  width: calc(100% - 270px); 
+  display: flex;
+  flex-direction: column;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; 
+  gap: 50px; 
+}
+
+.step-box {
+  width: 40px; 
+  height: 40px; 
+  background-color: transparent;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  margin: 0 px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: none;
+  border: none;
+  box-shadow: none !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.step-box.active {
+  background-color: #ff8c00; 
+  color: white;
+}
+
+.step-box.inactive {
+  background-color: #ccc; 
+  color: #666; 
+}
+
+.step-text.active-text {
+  color: #ff8c00; 
+}
+
+.step-text.inactive-text {
+  color: #666; 
+}
+
+.step-description {
+  display: flex;
+  justify-content: center;
+  margin-top: -10px; 
+  gap: 80px; 
+}
+
+.step-text {
+  font-size: 14px; 
+  text-align: center;
+  width: auto; 
+  margin: 20px 0 0 0; 
+  transition: color 0.3s;
+}
+
+.step-text h2 {
+  font-size: 12px; 
+  color: #333; 
+  margin-top: 5px;
+  transition: color 0.3s ease, font-weight 0.3s ease; /* Animasyon */
+}
+
+.step-text.active-text h2 {
+  color: #ff8c00; /* Aktif başlık rengi */
+  font-weight: bold;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  background-color: #ff8c00;
+  color: white;
+  border: none;
+  padding: 10px 20px; /* Yatay ve dikey iç boşluk */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e07b00;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed; 
+}
+

@@ -1,0 +1,145 @@
+.help-info-container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-section {
+  width: 25%;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.right-section {
+  width: 75%;
+  padding: 20px;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.new-question-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffffff;
+  color: rgb(111, 111, 109);
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.categories {
+  margin-top: 20px;
+}
+
+.category-item {
+  background-color: #e2e2e2;
+  padding: 8px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.right-section .question-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.filter-item {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  flex: 1;
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.filter-item:hover {
+  background-color: #eaeaea;
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.question-item {
+  background-color: #fafafa;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.question-item h4 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.question-meta {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.question-meta span {
+  margin-right: 20px;
+  color: #777;
+}
+
+.question-header {
+  display: flex;
+  justify-content: flex-start; /* Başlıkları sola hizaladık */
+  margin-bottom: 20px;
+   /* Sağdan ve soldan boşluk ekleyerek ortalamaya yakın hizalama sağladık */
+}
+
+.question-header h3 {
+  font-size: 20px;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  width: 23%; /* Yine genişliği %23 olarak tutuyoruz */
+  padding-right: 10px; /* Başlıklar arasına boşluk ekledik */
+  margin-left: 50px;
+}
+
+.question-header h3:hover {
+  background-color: #eaeaea;
+  cursor: pointer;
+}
+/* Yeni düzenleme: Son Cevaplananlar ve Henüz Cevaplanmamışlar kutuları */
+.right-section .questions-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  width: 48%; /* Yana yana olacak şekilde genişlik */
+  background-color: #fafafa;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.summary-item h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.summary-item .question-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-item .question-list .question-item {
+  margin-top: 10px;
+}

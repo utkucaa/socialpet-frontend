@@ -1,0 +1,58 @@
+.header {
+  background-color:#f9e79f ;
+  position: relative;
+  height: 400px; 
+  text-align: center;
+  }
+  
+  .sahiplen-background {
+    position: absolute; /* Resmi arka planda sabitlemek için */
+    top: 0;
+    left: 0;
+    width: 100%; /* Genişliği tam olarak sayfaya yayıyor */
+    height: 100%; /* Yüksekliği başlık kısmının yüksekliğine göre ayarlanır */
+    object-fit: cover; /* Resmin düzgün şekilde yayılmasını sağlıyor */
+    z-index: -1; /* Resmin içeriklerin arkasında görünmesini sağlıyor */
+  }
+
+  .header-content {
+    position: relative; /* Arka plandaki img'nin üstünde görünmesini sağlar */
+    z-index: 1; /* İçeriğin ön planda olmasını sağlar */
+    padding: 20px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .title {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .search-field {
+    margin: 0 10px;
+  }
+  
+  .search-button {
+    background-color: #ff6f61;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .search-button:hover {
+    background-color: #ff3b2a;
+  }
+  

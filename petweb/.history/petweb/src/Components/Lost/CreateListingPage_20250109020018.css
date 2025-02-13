@@ -1,0 +1,233 @@
+.create-listing-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+  
+  .left-section {
+    width: 70%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .right-section {
+    width: 30%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Sağ kısımdaki elemanları dikey hizala */
+    align-items: flex-end; /* Sağ tarafa hizala */
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  /* Genel kutu stili */
+  .container-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  textarea {
+    min-height: 100px;
+  }
+  
+  textarea::placeholder {
+    font-style: italic;
+  }
+  
+  .map-container {
+    height: 200px;
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+  }
+  
+  .image-preview {
+    width: 100%;
+    max-width: 300px; /* Görselin sağa yaslanması için genişlik sınırlama */
+    height: 200px;
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto; /* Sağ tarafa itme */
+  }
+  
+  .image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  small {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .right-section .container-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Butonl.create-listing-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .mobile-app-notice {
+      background-color: #e3f2fd;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    .download-link {
+      color: #1976d2;
+      text-decoration: none;
+    }
+    
+    .listing-form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .phone-warning {
+      color: #d32f2f;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .detail-note {
+      color: #666;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    
+    .image-upload-container {
+      border: 2px dashed #ddd;
+      border-radius: 4px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .file-label {
+      cursor: pointer;
+      display: block;
+    }
+    
+    .upload-placeholder {
+      color: #1976d2;
+      font-size: 18px;
+      padding: 40px 0;
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+    }
+    
+    .upload-note {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .publish-button, .delete-button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .publish-button {
+      background-color: #4caf50;
+      color: white;
+    }
+    
+    .delete-button {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .terms-notice {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+    
+    .terms-link {
+      color: #1976d2;
+      text-decoration: none;
+    }
+    
+    h2, h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    /* Harita konteyner stili */
+    .map-container {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      overflow: hidden;
+    }

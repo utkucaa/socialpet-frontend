@@ -1,0 +1,15 @@
+.add-listing-btn {
+    background-color: #ff6f61;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+  }
+  
+  .add-listing-btn:hover {
+    background-color: #ff3b2a;
+  }
+  

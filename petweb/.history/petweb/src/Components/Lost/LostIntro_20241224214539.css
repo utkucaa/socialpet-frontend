@@ -1,0 +1,42 @@
+.lost-intro {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f9f9f9; 
+    position: relative; 
+  }
+
+  .lost-intro img {
+    width: 100%; /* Resmin genişliğini %100 yaparak tam genişlikte olmasını sağlıyoruz */
+  height: auto; /* Yüksekliği orantılı olarak ayarlıyoruz */
+  max-height: 400px; /* Resmin yüksekliğini sınırlandırıyoruz (ince uzun) */
+  object-fit: cover; /* Resmi alana sığdırıyoruz, bozulmadan kesilmesini sağlıyoruz */
+  position: absolute; /* Resmi üst üste getirmek için */
+  top: 0;
+  left: 0;
+  z-index: 1; /* Resmin altına boşluk bırakıyoruz */
+  filter: brightness(0.7) sepia(0.5) hue-rotate(30deg); /* Yumuşak turuncu tonu */
+
+  }
+  
+  .lost-intro h1 {
+    position: relative; /* Yazıları resmin üzerine yerleştiriyoruz */
+  z-index: 1; /* Yazıların resmin üstünde görünmesini sağlıyoruz */
+  color: white;
+  }
+  
+  .lost-intro p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 10px;
+  }
+
+  .lost-intro::before {
+    content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(246, 194, 98, 0.5); /* Yarı saydam turuncu renk */
+  z-index: 0;/* Efekti yazıların altına yerleştiriyoruz */
+  }

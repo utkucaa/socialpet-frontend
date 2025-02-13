@@ -1,0 +1,30 @@
+.category-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin: 30px 0;
+  }
+  
+  .category-section {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+  
+  .category-section:nth-child(odd) {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .category-section h2 {
+    margin: 0;
+  }
+  

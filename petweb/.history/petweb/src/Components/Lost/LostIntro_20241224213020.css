@@ -1,0 +1,24 @@
+.lost-intro {
+    background-image: url('/kayıp.jpg'); /* Resmi public klasöründen al */
+  background-size: cover; /* Resmin tüm alanı kaplamasını sağlar */
+  background-position: center; /* Resmin ortalanmasını sağlar */
+  background-repeat: no-repeat; /* Resmin tekrarlanmaması için */
+  height: 100vh; /* Yüksekliği sayfa boyutuna ayarlamak için */
+  display: flex;
+  align-items: center; /* Yazıları ortalamak için */
+  justify-content: center; /* Yazıları ortalamak için */
+  color: white; /* Yazı rengini beyaz yap */
+  text-align: center; /* Yazıları ortalamak için */
+  padding: 20px;
+  }
+  
+  .lost-intro h1 {
+    font-size: 2.5rem;
+    color: #333;
+  }
+  
+  .lost-intro p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 10px;
+  }

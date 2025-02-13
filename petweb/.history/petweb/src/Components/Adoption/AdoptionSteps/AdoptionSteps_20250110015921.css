@@ -1,0 +1,191 @@
+.step {
+    max-width: 900px; 
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .step h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .step1 select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .step1 p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .step button {
+  background-color: #f8c471;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  }
+  
+  .step button:hover {
+    background-color: #f8c471;
+  }
+  
+  .step button:focus {
+    outline: none;
+  }
+
+  .step2 {
+    padding: 20px;
+    margin: 20px 0;
+    width: 100%; /* Sidebar'ın genişliğini göz önünde bulundurarak */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0; /* Sidebar'ın yanına yaslamak için */
+    box-sizing: border-box; /* padding ve border'ı genişliğe dahil etmek için */
+}
+
+/* Başlık stilini sola dayamak için */
+.step2 h3 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%; /* Başlığı tam genişlikte hizalar */
+}
+
+/* Form elemanlarını sola hizalamak için */
+.step2 form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.step2 form div {
+    margin-bottom: 15px;
+    width: 100%; /* Form elemanlarının tüm genişliği kullanmasını sağlıyoruz */
+}
+
+.step2 form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.step2 form input,
+.step2 form textarea {
+  width: 100%; 
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; 
+  margin-top: 5px; 
+  min-height: 40px;
+  text-align: left;
+}
+
+.step2 form textarea {
+  resize: vertical; 
+  min-height: 80px; 
+}
+
+
+.step2 form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #e99f31;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.step2 form button:hover {
+    background-color: #e2be5e;
+}
+  
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.step-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8c471;
+  color: white;
+  font-weight: bold;
+}
+
+.step-text {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #666;
+}
+
+.active .step-box {
+  background-color: #f39c12;
+}
+
+.active-text {
+  color: #333;
+  font-weight: bold;
+}
+
+.inactive .step-box {
+  background-color: #ddd;
+}
+
+.inactive-text {
+  color: #999;
+}
+
+.description {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center; 
+}
+
+label {
+  width: 150px; 
+  text-align: left; 
+}
+
+.small-textarea {
+  width: 100px;
+  max-width: 100%;
+  resize: none;
+}

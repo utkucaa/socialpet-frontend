@@ -1,0 +1,26 @@
+import React from "react";
+import Header from "./Header";
+import Stats from "./Stats";
+import Listings from "./Listings";
+import AddListingButton from "./AddListingButton";
+import "./AdoptionPage.css";
+
+const AdoptionPage = () => {
+  return (
+    <div className="adoption-page">
+      {/* Header - Sayfa Başlığı */}
+      <Header />
+
+      {/* İstatistikler ve Araçlar */}
+      <Stats />
+
+      {/* İlanlar */}
+      <Listings />
+
+      {/* Yeni İlan Ekleme Butonu */}
+      <AddListingButton />
+    </div>
+  );
+};
+
+export default AdoptionPage;
