@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './NewAnswer.css';
 
 const NewAnswer = () => {
@@ -8,8 +9,26 @@ const NewAnswer = () => {
     details: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    try {
+      const response = await axios.post('http://localhost:8080/api/questions', {
+        title: formData.question,
+        content: formData.details,
+        user: {
+          id: 13 // Şimdilik sabit bir kullanıcı ID'si kullanıyoruz
+        }
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        alert('Sorunuz başarıyla gönderildi!');
+        setFormData({ topic: '', question: '', details: '' }); // Formu temizle
+      }
+    } catch (error) {
+      console.error('Soru gönderilirken bir hata oluştu:', error);
+      alert('Soru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   return (
