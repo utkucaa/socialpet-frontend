@@ -11,7 +11,7 @@ import QuestionDetail from "./QuestionDetail";
 
 const HelpAndInfo = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Arama terimini tutmak için useState
-  const [activeCategory, setActiveCategory] = useState("Son Cevaplananlar"); // Kategori seçimi için state
+  const [activeCategory, setActiveCategory] = useState("En Son Sorulan Sorular"); // Kategori seçimi için state
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [questions, setQuestions] = useState([]); // New state for questions
   const [loading, setLoading] = useState(true); // Loading state
@@ -99,18 +99,7 @@ const HelpAndInfo = () => {
 
       <div className="content-right">
         <div className="questions-header">
-          <h3 onClick={() => handleCategoryClick("Son Cevaplananlar")}>
-            Son Cevaplananlar
-          </h3>
-          <h3 onClick={() => handleCategoryClick("Henüz Cevaplanmamışlar")}>
-            Henüz Cevaplanmamışlar
-          </h3>
-          <h3 onClick={() => handleCategoryClick("Çok Görüntülenenler")}>
-            Çok Görüntülenenler
-          </h3>
-          <h3 onClick={() => handleCategoryClick("Çok Cevaplananlar")}>
-            Çok Cevaplananlar
-          </h3>
+          <h3>En Son Sorulan Sorular</h3>
         </div>
 
         <div className="questions-container">
@@ -120,85 +109,23 @@ const HelpAndInfo = () => {
             <div>Error: {error}</div>
           ) : (
             <>
-              {/* "Son Cevaplananlar" başlığı altında 2 soru gösterilecek */}
-              {activeCategory === "Son Cevaplananlar" &&
-                questions.slice(0, 2).map((question, index) => (
-                  <div
-                    key={question.id}
-                    className="question-box"
-                    onClick={() => handleQuestionClick(question.id)}
-                  >
-                    <h4>{question.title}</h4>
-                    <p>
-                      {question.user.firstName} {question.user.lastName} sordu -{" "}
-                      {new Date(question.datePosted).toLocaleString("tr-TR")}
-                    </p>
-                    <div className="question-meta-data">
-                      <span>0 Görüntüleme</span>
-                      <span>{question.answers?.length || 0} Cevap</span>
-                    </div>
+              {questions.map((question, index) => (
+                <div
+                  key={question.id}
+                  className="question-box"
+                  onClick={() => handleQuestionClick(question.id)}
+                >
+                  <h4>{question.title}</h4>
+                  <p>
+                    {question.user.firstName} {question.user.lastName} sordu -{" "}
+                    {new Date(question.datePosted).toLocaleString("tr-TR")}
+                  </p>
+                  <div className="question-meta-data">
+                    <span>0 Görüntüleme</span>
+                    <span>{question.answers?.length || 0} Cevap</span>
                   </div>
-                ))}
-              {/* "Henüz Cevaplanmamışlar" başlığı altında 3. soruyu gösterecek */}
-              {activeCategory === "Henüz Cevaplanmamışlar" &&
-                questions
-                  .filter((q) => q.category === "Henüz Cevaplanmamışlar")
-                  .map((question, index) => (
-                    <div
-                      key={question.id}
-                      className="question-box"
-                      onClick={() => handleQuestionClick(question.id)} //
-                    >
-                      <h4>{question.title}</h4>
-                      <p>
-                        {question.username} sordu - {question.time}
-                      </p>
-                      <div className="question-meta-data">
-                        <span>{question.views} Görüntüleme</span>
-                        <span>{question.answers} Cevap</span>
-                      </div>
-                    </div>
-                  ))}
-              {/* "Çok Görüntülenenler" başlığı altında 4. soruyu gösterecek */}
-              {activeCategory === "Çok Görüntülenenler" &&
-                questions
-                  .filter((q) => q.category === "Çok Görüntülenenler")
-                  .map((question, index) => (
-                    <div
-                      key={question.id}
-                      className="question-box"
-                      onClick={() => handleQuestionClick(question.id)} //
-                    >
-                      <h4>{question.title}</h4>
-                      <p>
-                        {question.username} sordu - {question.time}
-                      </p>
-                      <div className="question-meta-data">
-                        <span>{question.views} Görüntüleme</span>
-                        <span>{question.answers} Cevap</span>
-                      </div>
-                    </div>
-                  ))}
-              {/* "Çok Cevaplananlar" başlığı altında 1. soruyu gösterecek */}
-              {activeCategory === "Çok Cevaplananlar" &&
-                questions
-                  .filter((q) => q.category === "Çok Cevaplananlar")
-                  .map((question, index) => (
-                    <div
-                      key={question.id}
-                      className="question-box"
-                      onClick={() => handleQuestionClick(question.id)}
-                    >
-                      <h4>{question.title}</h4>
-                      <p>
-                        {question.username} sordu - {question.time}
-                      </p>
-                      <div className="question-meta-data">
-                        <span>{question.views} Görüntüleme</span>
-                        <span>{question.answers} Cevap</span>
-                      </div>
-                    </div>
-                  ))}
+                </div>
+              ))}
             </>
           )}
         </div>

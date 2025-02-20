@@ -1,75 +1,114 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import LostItemCard from './LostItemCard';
 import './LostItemList.css';
 
 const LostItemList = () => {
-  const lostCats = [
-    { id: 1, title: 'Kayıp Kedi 1', image: '/cat1.jpg', location: 'Konya', daysAgo: 5, animalType: 'Kedi' },
-    { id: 2, title: 'Kayıp Kedi 2', image: '/cat2.jpg', location: 'İstanbul', daysAgo: 3, animalType: 'Kedi' },
-    { id: 3, title: 'Kayıp Kedi 3', image: '/cat3.jpg', location: 'Ankara', daysAgo: 2, animalType: 'Kedi' },
-    { id: 4, title: 'Kayıp Kedi 4', image: '/cat4.jpg', location: 'İzmir', daysAgo: 1, animalType: 'Kedi' },
-  ];
+  const [lostAnimals, setLostAnimals] = useState([]);
 
-  const lostDogs = [
-    { id: 1, title: 'Kayıp Köpek 1', image: '/dog1.jpg', location: 'Bursa', daysAgo: 4, animalType: 'Köpek' },
-    { id: 2, title: 'Kayıp Köpek 2', image: '/dog2.jpg', location: 'Adana', daysAgo: 6, animalType: 'Köpek' },
-    { id: 3, title: 'Kayıp Köpek 3', image: '/dog3.jpg', location: 'Mersin', daysAgo: 2, animalType: 'Köpek' },
-    { id: 4, title: 'Kayıp Köpek 4', image: '/dog4.jpg', location: 'Antalya', daysAgo: 5, animalType: 'Köpek' },
-  ];
+  // Zaman farkını hesaplayan yardımcı fonksiyon
+  const getTimeAgo = (timestamp) => {
+    const now = new Date();
+    const postedTime = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - postedTime) / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
-  const lostParrots = [
-    { id: 1, title: 'Kayıp Papağan 1', image: '/parrot1.jpg', location: 'Bolu', daysAgo: 7, animalType: 'Papağan' },
-    { id: 2, title: 'Kayıp Papağan 2', image: '/parrot2.jpg', location: 'Bursa', daysAgo: 3, animalType: 'Papağan' },
-    { id: 3, title: 'Kayıp Papağan 3', image: '/parrot3.jpg', location: 'Muğla', daysAgo: 1, animalType: 'Papağan' },
-    { id: 4, title: 'Kayıp Papağan 4', image: '/parrot4.jpg', location: 'Aydın', daysAgo: 6, animalType: 'Papağan' },
-  ];
+    if (diffInSeconds < 60) {
+      return 'Az önce';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} dakika önce`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours} saat önce`;
+    } else if (diffInDays < 7) {
+      return `${diffInDays} gün önce`;
+    } else if (diffInDays < 30) {
+      const weeks = Math.floor(diffInDays / 7);
+      return `${weeks} hafta önce`;
+    } else if (diffInDays < 365) {
+      const months = Math.floor(diffInDays / 30);
+      return `${months} ay önce`;
+    } else {
+      const years = Math.floor(diffInDays / 365);
+      return `${years} yıl önce`;
+    }
+  };
 
-  const lostBudgies = [
-    { id: 1, title: 'Kayıp Muhabbet Kuşu 1', image: '/budgie1.jpg', location: 'Tekirdağ', daysAgo: 4, animalType: 'Muhabbet Kuşu' },
-    { id: 2, title: 'Kayıp Muhabbet Kuşu 2', image: '/budgie2.jpg', location: 'Edirne', daysAgo: 3, animalType: 'Muhabbet Kuşu' },
-    { id: 3, title: 'Kayıp Muhabbet Kuşu 3', image: '/budgie3.jpg', location: 'Sakarya', daysAgo: 2, animalType: 'Muhabbet Kuşu' },
-    { id: 4, title: 'Kayıp Muhabbet Kuşu 4', image: '/budgie4.jpg', location: 'Kocaeli', daysAgo: 5, animalType: 'Muhabbet Kuşu' },
-  ];
+  useEffect(() => {
+    // localStorage'dan ilanları al
+    const savedListings = JSON.parse(localStorage.getItem('lostAnimals')) || [];
+    
+    // API'den ilanları çek
+    const fetchListings = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/lost-pets');
+        if (!response.ok) {
+          throw new Error('API isteği başarısız oldu');
+        }
+        const apiListings = await response.json();
+        
+        // API'den gelen ilanları formatlayarak birleştir
+        const formattedApiListings = apiListings.map(listing => ({
+          id: listing.id || Date.now(),
+          title: listing.title || 'İsimsiz İlan',
+          image: listing.image || '/default-image.jpg',
+          location: listing.location || 'Konum belirtilmedi',
+          timestamp: listing.timestamp || Date.now(), // Zaman damgası eklendi
+          timeAgo: getTimeAgo(listing.timestamp || Date.now()), // Zaman farkı hesaplanıyor
+          animalType: listing.animalType || 'Belirtilmedi',
+          details: listing.details || '',
+          status: listing.status || 'kayip',
+          additionalInfo: listing.additionalInfo || 'bos'
+        }));
+
+        // localStorage'daki ilanları formatla
+        const formattedLocalListings = savedListings.map(listing => ({
+          ...listing,
+          timestamp: listing.timestamp || Date.now(),
+          timeAgo: getTimeAgo(listing.timestamp || Date.now())
+        }));
+
+        // localStorage ve API'den gelen ilanları birleştir
+        const allListings = [...formattedLocalListings, ...formattedApiListings];
+        
+        // Tarihe göre sırala (en yeniler üstte)
+        const sortedListings = allListings.sort((a, b) => b.timestamp - a.timestamp);
+        
+        setLostAnimals(sortedListings);
+      } catch (error) {
+        console.error('İlanlar çekilirken hata oluştu:', error);
+        // Hata durumunda sadece localStorage'daki ilanları göster
+        const formattedLocalListings = savedListings.map(listing => ({
+          ...listing,
+          timestamp: listing.timestamp || Date.now(),
+          timeAgo: getTimeAgo(listing.timestamp || Date.now())
+        }));
+        setLostAnimals(formattedLocalListings);
+      }
+    };
+
+    fetchListings();
+
+    // Her dakika zaman bilgisini güncelle
+    const interval = setInterval(() => {
+      setLostAnimals(prevListings => 
+        prevListings.map(listing => ({
+          ...listing,
+          timeAgo: getTimeAgo(listing.timestamp)
+        }))
+      );
+    }, 60000); // 60 saniye
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="lost-item-list">
-      <h1>Son Kayıp İlanlar</h1>
-
-      <div className="category" id="cats">
-        <h2>Son Kayıp Kediler</h2>
-        <button className="view-all-btn">Bütün Kedi İlanlarını Görüntüle</button>
+      <div className="category" id="all-animals">
+        <h2>Son Kayıp Hayvanlar</h2>
+        <button className="view-all-btn">Bütün İlanları Görüntüle</button>
         <div className="item-cards">
-          {lostCats.map((item) => (
-            <LostItemCard key={item.id} {...item} />
-          ))}
-        </div>
-      </div>
-
-      <div className="category" id="dogs">
-        <h2>Son Kayıp Köpekler</h2>
-        <button className="view-all-btn">Bütün Köpek İlanlarını Görüntüle</button>
-        <div className="item-cards">
-          {lostDogs.map((item) => (
-            <LostItemCard key={item.id} {...item} />
-          ))}
-        </div>
-      </div>
-
-      <div className="category" id="parrots">
-        <h2>Son Kayıp Papağanlar</h2>
-        <button className="view-all-btn">Bütün Papağan İlanlarını Görüntüle</button>
-        <div className="item-cards">
-          {lostParrots.map((item) => (
-            <LostItemCard key={item.id} {...item} />
-          ))}
-        </div>
-      </div>
-
-      <div className="category" id="budgies">
-        <h2>Son Kayıp Muhabbet Kuşları</h2>
-        <button className="view-all-btn">Bütün Muhabbet Kuşu İlanlarını Görüntüle</button>
-        <div className="item-cards">
-          {lostBudgies.map((item) => (
+          {lostAnimals.map((item) => (
             <LostItemCard key={item.id} {...item} />
           ))}
         </div>

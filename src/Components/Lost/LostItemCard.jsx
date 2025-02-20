@@ -1,7 +1,7 @@
 import React from 'react';
 import './LostItemCard.css';
 
-const LostItemCard = ({ title, image, location, daysAgo, animalType }) => {
+const LostItemCard = ({ title, image, location, timeAgo, animalType }) => {
   return (
     <div className="lost-item-card">
       <img src={image} alt={title} className="item-image" />
@@ -9,7 +9,7 @@ const LostItemCard = ({ title, image, location, daysAgo, animalType }) => {
         <h3>{title}</h3>
         <p>{animalType}</p>
         <p>{location}</p>
-        <p>{daysAgo} gün önce ilan verildi</p>
+        <p>{timeAgo} ilan verildi</p>
         <button className="cta-button">İlanı Görüntüle</button>
       </div>
     </div>

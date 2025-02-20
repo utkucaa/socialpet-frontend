@@ -20,11 +20,6 @@ const Step4 = ({ adoptionData }) => {
       setLoading(true);
       setError("");
 
-      const photoFormData = new FormData();
-      if (adoptionData.photo) {
-        photoFormData.append("photo", adoptionData.photo);
-      }
-
       const adData = {
         animalType: adoptionData.animalType,
         petName: adoptionData.petName,
@@ -39,11 +34,13 @@ const Step4 = ({ adoptionData }) => {
         district: adoptionData.district,
         fullName: adoptionData.fullName,
         phone: adoptionData.phone,
-        user: {id:12},
-        createdAt: "2024-01-01"
+        userId: 12,
+        status: "ACTIVE"
       };
 
+      console.log("Gönderilecek ilan verisi:", adData);
 
+      // Önce ilan verilerini JSON olarak gönder
       const response = await axios.post(
         "http://localhost:8080/api/adoption/create",
         adData,
@@ -54,9 +51,16 @@ const Step4 = ({ adoptionData }) => {
         }
       );
 
-      
+      console.log("Sunucudan gelen yanıt:", response.data);
+
+      // Eğer fotoğraf varsa ve ilan başarıyla oluşturulduysa, fotoğrafı ayrı bir request ile gönder
       if (adoptionData.photo && response.data.id) {
-        await axios.post(
+        const photoFormData = new FormData();
+        photoFormData.append('photo', adoptionData.photo);
+
+        console.log("Fotoğraf yükleniyor, ilan ID:", response.data.id);
+
+        const photoResponse = await axios.post(
           `http://localhost:8080/api/adoption/${response.data.id}/upload-photo`,
           photoFormData,
           {
@@ -65,6 +69,8 @@ const Step4 = ({ adoptionData }) => {
             }
           }
         );
+
+        console.log("Fotoğraf yükleme yanıtı:", photoResponse.data);
       }
 
       console.log("İlan başarıyla kaydedildi", response.data);
@@ -72,7 +78,8 @@ const Step4 = ({ adoptionData }) => {
       navigate("/adopt");
 
     } catch (error) {
-      console.error("İlan kaydedilirken hata:", error.response?.data || error.message);
+      console.error("İlan kaydedilirken hata detayı:", error.response?.data);
+      console.error("Tam hata:", error);
       setError(error.response?.data?.message || "İlan kaydedilirken bir hata oluştu");
       alert("İlan kaydedilirken bir hata oluştu. Lütfen tüm alanları kontrol edip tekrar deneyin.");
     } finally {

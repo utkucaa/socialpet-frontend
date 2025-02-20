@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CreateListingPage.css';
 
 const CreateListingPage = () => {
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    details: '',
+    location: '',
+    animalType: '',
+    status: 'kayip',
+    additionalInfo: '',
+  });
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -17,10 +27,42 @@ const CreateListingPage = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    const newListing = {
+      id: Date.now(), // Geçici unique ID
+      title: formData.title,
+      image: previewUrl || '/default-image.jpg',
+      location: formData.location || 'Konum belirtilmedi',
+      timestamp: Date.now(), // Zaman damgası eklendi
+      animalType: formData.animalType,
+      details: formData.details,
+      status: formData.status,
+      additionalInfo: formData.additionalInfo
+    };
+
+    // Mevcut ilanları localStorage'dan al
+    const existingListings = JSON.parse(localStorage.getItem('lostAnimals')) || [];
+    
+    // Yeni ilanı listeye ekle
+    const updatedListings = [newListing, ...existingListings];
+    
+    // Güncellenmiş listeyi localStorage'a kaydet
+    localStorage.setItem('lostAnimals', JSON.stringify(updatedListings));
+
+    // Ana sayfaya yönlendir
+    navigate('/');
+  };
+
   return (
     <div className="page-container">
-      
-
       <div className="create-listing-container">
         <div className="left-section">
           <h2>İlan Gönder</h2>
@@ -28,6 +70,9 @@ const CreateListingPage = () => {
           <div className="form-group">
             <input 
               type="text" 
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
               placeholder="İlan başlığı" 
               className="form-input"
             />
@@ -35,8 +80,10 @@ const CreateListingPage = () => {
 
           <div className="form-group">
             <h3>İlan detayları</h3>
-            
             <textarea 
+              name="details"
+              value={formData.details}
+              onChange={handleInputChange}
               className="form-textarea"
               placeholder="İlan detay bölümüne girdiğiniz her detay bulunma olasılığını artıracaktır. Kaybolduğu yer ve zaman gibi her detayı buraya girmelisiniz."
             />
@@ -48,26 +95,41 @@ const CreateListingPage = () => {
 
           <div className="form-group">
             <h3>İlan Konumu</h3>
-            <p>Lütfen haritayı sürükleyerek yaklaşık olarak kaybolduğu konumunu belirleyin.</p>
-            <div className="map-container">
-              <p>Harita yükleniyor...</p>
-            </div>
+            <input 
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              placeholder="Konum giriniz"
+              className="form-input"
+            />
+            <p>Lütfen kaybolduğu konumu belirtin.</p>
           </div>
 
           <div className="form-group">
             <h3>İlan kategorisi</h3>
-            <select className="form-select">
+            <select 
+              name="animalType"
+              value={formData.animalType}
+              onChange={handleInputChange}
+              className="form-select"
+            >
               <option value="">Seçiniz</option>
-              <option value="kedi">Kedi</option>
-              <option value="kopek">Köpek</option>
-              <option value="papagan">Papağan</option>
-              <option value="muhabbet-kusu">Muhabbet Kuşu</option>
+              <option value="Kedi">Kedi</option>
+              <option value="Köpek">Köpek</option>
+              <option value="Papağan">Papağan</option>
+              <option value="Muhabbet Kuşu">Muhabbet Kuşu</option>
             </select>
           </div>
 
           <div className="form-group">
             <h3>İlan durumu</h3>
-            <select className="form-select">
+            <select 
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              className="form-select"
+            >
               <option value="kayip">Kayıp</option>
               <option value="bulundu">Bulundu</option>
             </select>
@@ -75,13 +137,18 @@ const CreateListingPage = () => {
         </div>
 
         <div className="form-group">
-            <h3>İlan ek bilgi</h3>
-            <select className="form-select">
-              <option value="bos">Boş</option>
-              <option value="odullu">Ödüllü</option>
-              <option value="acil">Acil</option>
-            </select>
-          </div>
+          <h3>İlan ek bilgi</h3>
+          <select 
+            name="additionalInfo"
+            value={formData.additionalInfo}
+            onChange={handleInputChange}
+            className="form-select"
+          >
+            <option value="bos">Boş</option>
+            <option value="odullu">Ödüllü</option>
+            <option value="acil">Acil</option>
+          </select>
+        </div>
 
         <div className="right-section">
           <div className="form-group">
@@ -110,7 +177,7 @@ const CreateListingPage = () => {
           </div>
 
           <div className="button-container">
-            <button className="publish-button">Yayımla</button>
+            <button className="publish-button" onClick={handleSubmit}>Yayımla</button>
             <button className="delete-button">Sil</button>
             <p className="terms-text">
               Yayımla butonuna bastığınızda 
