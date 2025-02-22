@@ -188,3 +188,47 @@ label {
   max-width: 100%;
   resize: none;
 }
+
+/* Resim yükleme stilleri */
+.image-upload-container {
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  cursor: pointer;
+  display: block;
+  min-height: 200px;
+}
+
+.upload-placeholder {
+  color: #1976d2;
+  font-size: 18px;
+  padding: 60px 0;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.upload-note {
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-top: 10px;
+  font-size: 14px;
+}

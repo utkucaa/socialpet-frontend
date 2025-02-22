@@ -3,7 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import "./Stats.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseChimney, faShareNodes, faChartSimple } from '@fortawesome/free-solid-svg-icons';
-
+import axios from 'axios';
+import axiosInstance from '../../services/axios';
 
 const Stats = () => {
   const navigate = useNavigate();
@@ -14,46 +15,39 @@ const Stats = () => {
     imageUrl: "",
   });
 
-  // Backend'den ilanları al
   useEffect(() => {
-    // Yeni ilanları al
-    fetch('http://localhost:8080/api/adoption/recent')  // URL'e http:// eklemeyi unutma
-      .then((response) => response.json())
-      .then((data) => setRecentAds(data))  // İlanları state'e kaydet
-      .catch((error) => console.error("Hata:", error));
+    fetchRecentAds();
   }, []);
+
+  const fetchRecentAds = async () => {
+    try {
+      const response = await axiosInstance.get('/v1/adoption/recent');
+      setRecentAds(response.data);
+    } catch (error) {
+      console.error("İlanlar yüklenirken hata oluştu:", error);
+    }
+  };
 
   const handleCreateAdClick = async (event) => {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8080/api/adoption/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const response = await axiosInstance.post("/v1/adoption/create", {
         ...adDetails,
-        user: { id:12 },
+        user: { id: 12 },
         createdAt: new Date().toISOString(),
-      }),
-    });
+      });
 
-    if (response.ok) {
-      fetchRecentAds(); 
-      navigate("/adopt");  
-    } else {
-      console.error("İlan eklenemedi");
+      if (response.data) {
+        fetchRecentAds(); 
+        navigate("/adopt");  
+      }
+    } catch (error) {
+      console.error("İlan eklenemedi:", error);
     }
   };
 
-  const fetchRecentAds = () => {
-    fetch("http://localhost:8080/api/ads/recent")
-      .then((response) => response.json())
-      .then((data) => setRecentAds(data))
-      .catch((error) => console.error("Hata:", error));
-  };
-
-   const handleAdClick = (ad) => {
+  const handleAdClick = (ad) => {
     navigate(`/ad-detail/${ad.id}`, { state: { ad } });
   };
 
@@ -93,28 +87,35 @@ const Stats = () => {
             <Link to="/create-ad"className="no-underline">Sahiplendirme İlan Ver</Link>
           </button>
         </div>
-<div className="recent-ads">
-  <h2 className="recent-ads-title">Yeni İlanlar</h2>
-  <ul className="ads-list">
-    {recentAds.length > 0 ? (
-      recentAds.map((ad) => (
-        <li key={ad.id} className="ad-item">
-          <Link to={`/ad/${ad.id}`} className="ad-link">
-            {ad.imageUrl && <img src={ad.imageUrl} alt={ad.petName} />}
-            <div className="ad-info">
-              <h3>{ad.petName}</h3>
-              <p className="ad-breed">Cinsi: {ad.breed}</p>
-              <p className="ad-location">{ad.location}</p>
-              <p className="ad-date">{new Date(ad.createdAt).toLocaleDateString()}</p>
-            </div>
-          </Link>
-        </li>
-      ))
-    ) : (
-      <p>Yeni ilan yok.</p>
-    )}
-  </ul>
-</div>
+        <div className="recent-ads">
+          <h2 className="recent-ads-title">Yeni İlanlar</h2>
+          <ul className="ads-list">
+            {recentAds.length > 0 ? (
+              recentAds.map((ad) => (
+                <li key={ad.id} className="ad-item">
+                  <Link to={`/ad/${ad.id}`} className="ad-link">
+                    {ad.imageUrl && (
+                      <img 
+                        src={`http://localhost:8080${ad.imageUrl}`} 
+                        alt={ad.petName} 
+                      />
+                    )}
+                    <div className="ad-info">
+                      <h3>{ad.petName}</h3>
+                      <p className="ad-breed">{ad.breed}</p>
+                      <p className="ad-location">{ad.location}</p>
+                      <p className="ad-date">
+                        {new Date(ad.createdAt).toLocaleDateString('tr-TR')}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <p>Henüz ilan bulunmamaktadır.</p>
+            )}
+          </ul>
+        </div>
       </div>
     </>
   );

@@ -34,7 +34,7 @@ function App() {
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Intro />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/adopt" element={<AdoptionPage />} />
         <Route path="/lost" element={<LostPage/>} />

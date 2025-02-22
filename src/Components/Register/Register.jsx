@@ -42,7 +42,8 @@ const Register = () => {
           userName: username,
           email: email,
           phoneNumber: phone,
-          password: password
+          password: password,
+          confirmPassword: confirmPassword
         })
       });
   

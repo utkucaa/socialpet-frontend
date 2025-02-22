@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../services/axios';
 
-const Login = ({ setUser }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,33 +20,36 @@ const Login = ({ setUser }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
+      const response = await axiosInstance.post("/auth/login", {
+        email: email,
+        password: password
       });
 
-      if (!response.ok) {
-        throw new Error('E-posta veya şifre yanlış!');
-      }
+      const { accessToken, userId, email: userEmail, joinDate, username, firstName, lastName, avatarUrl } = response.data;
+      
+      // JWT token'ı localStorage'a kaydet
+      localStorage.setItem('token', accessToken);
+      
+      // Kullanıcı bilgilerini localStorage'a kaydet
+      localStorage.setItem('user', JSON.stringify({
+        id: userId,
+        email: userEmail,
+        joinDate: joinDate,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        avatar: avatarUrl
+      }));
 
-      const data = await response.json();
       setSuccess('Başarıyla giriş yapıldı!');
       setError('');
-
-      // Kullanıcı bilgilerini setUser ile güncelle
-      setUser(data.user); // Örneğin, kullanıcı verisi içinde "name" olabilir.
 
       // Giriş başarılıysa kullanıcıyı profile sayfasına yönlendir
       setTimeout(() => navigate("/profile"), 2000);
 
     } catch (error) {
-      setError(error.message); // Hata mesajını göster
+      console.log(error);
+      setError(error.response?.data?.message || 'Giriş yapılırken bir hata oluştu'); 
       setSuccess('');
     }
   };
@@ -96,4 +100,3 @@ const Login = ({ setUser }) => {
 };
 
 export default Login;
-

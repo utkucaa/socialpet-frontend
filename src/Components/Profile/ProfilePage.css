@@ -5,7 +5,7 @@
 }
 
 .profile-header-section {
-  background: #696769;
+  background: #1968ad;
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -88,7 +88,7 @@
 
 .stats-section {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin: 20px 0;
 }
@@ -175,10 +175,10 @@
 .btn-logout {
   background-color: rgb(201, 197, 197);
   color: white;
+  padding: 8px 16px;
   border: none;
-  padding: 10px 20px;
+  border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px; /* İlan Ekle butonundan sonra biraz boşluk bırakır */
 }
 
 .btn-logout:hover {
