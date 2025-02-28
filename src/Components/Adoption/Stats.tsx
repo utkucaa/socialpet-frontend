@@ -1,34 +1,15 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Stats.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseChimney, faShareNodes, faChartSimple } from '@fortawesome/free-solid-svg-icons';
-import axiosInstance from '../../services/axios';
-
-interface AdDetails {
-  petName: string;
-  breed: string;
-  imageUrl: string;
-}
-
-interface Ad extends AdDetails {
-  id: string;
-  location: string;
-  createdAt: string;
-  user: {
-    id: number;
-  };
-}
+import adoptionService, { AdoptionListingDetail } from '../../services/adoptionService';
 
 const Stats: React.FC = () => {
-  const navigate = useNavigate();
-  const [recentAds, setRecentAds] = useState<Ad[]>([]);
-  const [adDetails, setAdDetails] = useState<AdDetails>({
-    petName: "",
-    breed: "",
-    imageUrl: "",
-  });
+  const [recentAds, setRecentAds] = useState<AdoptionListingDetail[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     fetchRecentAds();
@@ -36,61 +17,37 @@ const Stats: React.FC = () => {
 
   const fetchRecentAds = async (): Promise<void> => {
     try {
-      const response = await axiosInstance.get<Ad[]>('/v1/adoption/recent');
-      setRecentAds(response.data);
+      setLoading(true);
+      setError("");
+      const data = await adoptionService.getAdoptionListings();
+      setRecentAds(data);
     } catch (error) {
+      setError("İlanlar yüklenirken hata oluştu");
       console.error("İlanlar yüklenirken hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const handleCreateAdClick = async (event: React.FormEvent): Promise<void> => {
-    event.preventDefault();
-
-    try {
-      const response = await axiosInstance.post<Ad>("/v1/adoption/create", {
-        ...adDetails,
-        user: { id: 12 },
-        createdAt: new Date().toISOString(),
-      });
-
-      if (response.data) {
-        fetchRecentAds(); 
-        navigate("/adopt");  
-      }
-    } catch (error) {
-      console.error("İlan eklenemedi:", error);
-    }
-  };
-
-  const handleAdClick = (ad: Ad): void => {
-    navigate(`/ad-detail/${ad.id}`, { state: { ad } });
   };
 
   return (
     <>
-      <section className="stats">
+      <div className="stats">
         <div className="stat-item">
-          <h3>
-            <FontAwesomeIcon icon={faHouseChimney} style={{ marginRight: '10px' }} />
-            163.959 YUVA
-          </h3>
-          <p>163.959 PATİLİ DOSTUMUZ, SOCIALPET'DE YUVA BULDU ÇOK MUTLUYUZ!</p>
+          <FontAwesomeIcon icon={faHouseChimney} />
+          <h3>Sahiplendirme</h3>
+          <p>Ücretsiz ilan ver</p>
         </div>
         <div className="stat-item">
-          <h3>
-            <FontAwesomeIcon icon={faShareNodes} />
-            94.568 PAYLAŞIM
-          </h3>
-          <p>İLANLARIMIZ SOSYAL MEDYADA 94.568 KERE PAYLAŞILDI.</p>
+          <FontAwesomeIcon icon={faShareNodes} />
+          <h3>Paylaş</h3>
+          <p>Sosyal medyada paylaş</p>
         </div>
         <div className="stat-item">
-          <h3>
-            <FontAwesomeIcon icon={faChartSimple} />
-            23.345.678 GÖSTERİM
-          </h3>
-          <p>İLANLARIMIZ 23.345.678 KERE GÖRÜNTÜLENDİ, MİLYONLARA ULAŞTI.</p>
+          <FontAwesomeIcon icon={faChartSimple} />
+          <h3>Takip Et</h3>
+          <p>İlanları takip et</p>
         </div>
-      </section>
+      </div>
 
       <div className="adoption-section">
         <div className="new-adoption">
@@ -98,38 +55,49 @@ const Stats: React.FC = () => {
           <p className="adoption-text">
             Sahipsiz, yeni bir yuvaya ihtiyaç duyan kedi ve köpeklerin ilanlarını siz de socialpet.com'da ücretsiz yayınlayabilirsiniz.
           </p>
-          <button className='adoption-button'>
-            <Link to="/create-ad" className="no-underline">Sahiplendirme İlan Ver</Link>
-          </button>
+          <Link to="/create-ad" className="adoption-button">
+            Sahiplendirme İlan Ver
+          </Link>
         </div>
+
         <div className="recent-ads">
           <h2 className="recent-ads-title">Yeni İlanlar</h2>
-          <ul className="ads-list">
-            {recentAds.length > 0 ? (
-              recentAds.map((ad) => (
-                <li key={ad.id} className="ad-item">
-                  <Link to={`/ad/${ad.id}`} className="ad-link">
-                    {ad.imageUrl && (
-                      <img 
-                        src={`http://localhost:8080${ad.imageUrl}`} 
-                        alt={ad.petName} 
-                      />
+          {loading ? (
+            <div className="loading">Yükleniyor...</div>
+          ) : error ? (
+            <div className="error">{error}</div>
+          ) : (
+            <div className="listings-grid">
+              {recentAds.map((listing) => (
+                <Link 
+                  to={`/adoption/${listing.slug || listing.id}`} 
+                  key={listing.id} 
+                  className="listing-card"
+                >
+                  <div className="listing-image">
+                    {listing.imageUrl ? (
+                      <img src={listing.imageUrl} alt={listing.title} />
+                    ) : (
+                      <div className="no-image">Fotoğraf Yok</div>
                     )}
-                    <div className="ad-info">
-                      <h3>{ad.petName}</h3>
-                      <p className="ad-breed">{ad.breed}</p>
-                      <p className="ad-location">{ad.location}</p>
-                      <p className="ad-date">
-                        {new Date(ad.createdAt).toLocaleDateString('tr-TR')}
-                      </p>
+                  </div>
+                  <div className="listing-info">
+                    <h3>{listing.title}</h3>
+                    <p className="pet-name">{listing.petName}</p>
+                    <p className="location">{listing.city} / {listing.district}</p>
+                    <div className="pet-details">
+                      <span>{listing.breed}</span>
+                      <span>{listing.age}</span>
+                      <span>{listing.gender}</span>
                     </div>
-                  </Link>
-                </li>
-              ))
-            ) : (
-              <p>Henüz ilan bulunmamaktadır.</p>
-            )}
-          </ul>
+                    <p className="date">
+                      {new Date(listing.createdAt).toLocaleDateString('tr-TR')}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>

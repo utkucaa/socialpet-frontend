@@ -34,7 +34,24 @@
 
 .social-share {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  align-items: center;
+}
+
+.share-icon {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.share-icon:hover {
+  transform: translateY(-2px);
+  background-color: #e0e0e0;
 }
 
 .social-icon {

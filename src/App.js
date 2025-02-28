@@ -46,7 +46,7 @@ function App() {
         <Route path="/donate" element={<Donate/>} />
         <Route path="/create-ad" element={<CreatedPage />} />
         <Route path="/profile" element={<ProfilePage user={user} setUser={setUser} />} />
-        <Route path="/ad/:id" element={<AdDetail />} />
+        <Route path="/adoption/:id" element={<AdDetail />} />
         <Route path="/new-answer" element={<NewAnswer />} />
       </Routes>
     </Router>
