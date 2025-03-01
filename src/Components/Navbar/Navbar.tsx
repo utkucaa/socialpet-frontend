@@ -23,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-white shadow-lg z-10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
@@ -79,6 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
               </>
             ) : (
               <>
+                <Link to="/pets" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Hayvanlarım</Link>
                 <Link to="/profile" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Profil</Link>
                 <button
                   onClick={handleLogout}
@@ -106,16 +107,17 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
           {!user ? (
             <>
               <Link to="/login" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Giriş / Kayıt Ol</Link>
-              <Link to="/create-ad" className="block bg-blue-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700 mt-2">
+              <Link to="/create-ad" className="block bg-blue-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700">
                 Hemen İlan Ver
               </Link>
             </>
           ) : (
             <>
+              <Link to="/pets" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Hayvanlarım</Link>
               <Link to="/profile" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Profil</Link>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left bg-red-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-red-700 mt-2"
+                className="block w-full text-left bg-red-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-red-700"
               >
                 Çıkış Yap
               </button>

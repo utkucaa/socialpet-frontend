@@ -109,7 +109,7 @@ const Step4: React.FC<Step4Props> = ({ adoptionData }) => {
 
       try {
         const response = await axiosInstance.post<{ id: string }>(
-          "/v1/adoption/create",
+          "/api/v1/adoption/create",
           adData,
           {
             headers: {
@@ -127,7 +127,7 @@ const Step4: React.FC<Step4Props> = ({ adoptionData }) => {
 
           try {
             const photoResponse = await axiosInstance.post(
-              `/v1/adoption/${response.data.id}/upload-photo`,
+              `/api/v1/adoption/${response.data.id}/upload-photo`,
               photoFormData,
               {
                 headers: {

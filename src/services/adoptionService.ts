@@ -26,22 +26,40 @@ const adoptionService = {
   // Get all adoption listings
   getAdoptionListings: async () => {
     try {
+      console.log('API isteği başlatılıyor:', `${API_BASE_URL}/api/v1/adoption/recent`);
       const response = await axiosInstance.get('/api/v1/adoption/recent');
-      console.log('Listings response:', response.data);
+      console.log('API yanıtı:', response);
       
       if (!response.data) {
         throw new Error('Sunucudan veri alınamadı');
       }
 
       // Add base URL to image URLs if they don't start with http
-      return response.data.map((listing: AdoptionListingDetail) => ({
+      const processedData = response.data.map((listing: AdoptionListingDetail) => ({
         ...listing,
         imageUrl: listing.imageUrl ? 
           (listing.imageUrl.startsWith('http') ? listing.imageUrl : `${API_BASE_URL}${listing.imageUrl}`) 
           : null
       }));
+
+      console.log('İşlenmiş veri:', processedData);
+      return processedData;
     } catch (error: any) {
-      console.error('Error fetching listings:', error);
+      console.error('API Hatası:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      if (error.response?.status === 404) {
+        throw new Error('İlan bulunamadı');
+      } else if (!navigator.onLine) {
+        throw new Error('İnternet bağlantınızı kontrol ediniz');
+      } else if (error.code === 'ECONNABORTED') {
+        throw new Error('Sunucu yanıt vermedi, lütfen daha sonra tekrar deneyiniz');
+      }
+      
       throw new Error(error.response?.data?.message || 'İlanlar yüklenirken bir hata oluştu');
     }
   },

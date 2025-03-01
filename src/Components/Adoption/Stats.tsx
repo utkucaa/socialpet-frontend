@@ -19,11 +19,17 @@ const Stats: React.FC = () => {
     try {
       setLoading(true);
       setError("");
+      console.log("İlanlar yükleniyor...");
       const data = await adoptionService.getAdoptionListings();
+      console.log("Gelen ilanlar:", data);
+      if (!data || data.length === 0) {
+        setError("Henüz ilan bulunmamaktadır.");
+        return;
+      }
       setRecentAds(data);
-    } catch (error) {
-      setError("İlanlar yüklenirken hata oluştu");
-      console.error("İlanlar yüklenirken hata oluştu:", error);
+    } catch (error: any) {
+      console.error("İlan yükleme hatası detayı:", error);
+      setError(error.message || "İlanlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.");
     } finally {
       setLoading(false);
     }

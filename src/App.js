@@ -14,7 +14,7 @@ import AdDetail from './components/Adoption/AdDetail';
 import Donate from './components/Donate/Donate';
 import NewAnswer from './components/HelpAndInfo/NewAnswer';
 import MedicalRecord from './components/MedicalRecord/MedicalRecord';
-
+import PetList from './components/Pets/PetList';
 import './App.css';
 import HelpAndInfo from './components/HelpAndInfo/HelpAndInfo';
 
@@ -38,8 +38,10 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/adopt" element={<AdoptionPage />} />
         <Route path="/lost" element={<LostPage/>} />
+        <Route path="/pets" element={<PetList/>} />
         <Route path="/create-listing" element={<CreateListingPage />} />
         <Route path="/health-tracking" element={<MedicalRecord/>} />
+        <Route path="/medical-record/:petId" element={<MedicalRecord/>} />
         <Route path="/breed-detector" element={<div>Cins Dedektifi</div>} />
         <Route path="/help-info" element={<HelpAndInfo/>} />
         <Route path="/question/:id" element={<QuestionDetail />} />
