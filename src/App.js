@@ -39,7 +39,7 @@ function App() {
         <Route path="/adopt" element={<AdoptionPage />} />
         <Route path="/lost" element={<LostPage/>} />
         <Route path="/pets" element={<PetList/>} />
-        <Route path="/create-listing" element={<CreateListingPage />} />
+        <Route path="/lost/create" element={<CreateListingPage />} />
         <Route path="/health-tracking" element={<MedicalRecord/>} />
         <Route path="/medical-record/:petId" element={<MedicalRecord/>} />
         <Route path="/breed-detector" element={<div>Cins Dedektifi</div>} />

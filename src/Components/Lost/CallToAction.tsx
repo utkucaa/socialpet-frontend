@@ -17,7 +17,7 @@ const CallToAction: React.FC = () => {
       Hemen şimdi, "kayıp" veya "sahibi aranıyor" etiketi ile ilan gönder, 
       binlerce kişiye ücretsiz ulaşsın!
     </p>
-    <Link to="/create-listing">
+    <Link to="/lost/create">
     <button className="cta-button">
       Tıkla İlan Gönder
     </button>

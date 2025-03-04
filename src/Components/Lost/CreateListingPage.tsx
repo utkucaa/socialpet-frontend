@@ -1,20 +1,19 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import lostPetService from '../../services/lostPetService';
 import './CreateListingPage.css';
 
 interface FormData {
   title: string;
   details: string;
   location: string;
-  animalType: string;
+  category: string;
   status: string;
   additionalInfo: string;
-}
-
-interface NewListing extends FormData {
-  id: number;
-  image: string;
-  timestamp: number;
+  contactInfo: string;
+  lastSeenDate: string;
+  lastSeenLocation: string;
+  imageUrl: string;
 }
 
 const CreateListingPage: React.FC = () => {
@@ -25,9 +24,13 @@ const CreateListingPage: React.FC = () => {
     title: '',
     details: '',
     location: '',
-    animalType: '',
-    status: 'kayip',
+    category: '',
+    status: 'Kayıp',
     additionalInfo: '',
+    contactInfo: '',
+    lastSeenDate: '',
+    lastSeenLocation: '',
+    imageUrl: ''
   });
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -37,6 +40,10 @@ const CreateListingPage: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewUrl(reader.result as string);
+        setFormData(prev => ({
+          ...prev,
+          imageUrl: reader.result as string
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -50,30 +57,26 @@ const CreateListingPage: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (): void => {
-    const newListing: NewListing = {
-      id: Date.now(),
-      title: formData.title,
-      image: previewUrl || '/default-image.jpg',
-      location: formData.location || 'Konum belirtilmedi',
-      timestamp: Date.now(),
-      animalType: formData.animalType,
-      details: formData.details,
-      status: formData.status,
-      additionalInfo: formData.additionalInfo
-    };
+  const handleSubmit = async (): Promise<void> => {
+    try {
+      const user = localStorage.getItem("user");
+      const userData = JSON.parse(user);
+      // TODO: Replace with actual user ID from authentication
+      const userId = userData.id; // This should come from your auth context/state
+      
+      await lostPetService.createLostPet(userId, {
+        ...formData,
+        timestamp: Date.now(),
+        viewCount: 0
+      });
 
-    // Mevcut ilanları localStorage'dan al
-    const existingListings = JSON.parse(localStorage.getItem('lostAnimals') || '[]') as NewListing[];
-    
-    // Yeni ilanı listeye ekle
-    const updatedListings = [newListing, ...existingListings];
-    
-    // Güncellenmiş listeyi localStorage'a kaydet
-    localStorage.setItem('lostAnimals', JSON.stringify(updatedListings));
-
-    // Ana sayfaya yönlendir
-    navigate('/');
+      // Ana sayfaya yönlendir
+      alert("İlan başarıyla oluşturuldu");
+      navigate('/lost');
+    } catch (error) {
+      console.error('Error creating listing:', error);
+      // TODO: Add proper error handling/notification
+    }
   };
 
   return (
@@ -122,10 +125,45 @@ const CreateListingPage: React.FC = () => {
           </div>
 
           <div className="form-group">
+            <h3>Son Görüldüğü Konum</h3>
+            <input 
+              type="text"
+              name="lastSeenLocation"
+              value={formData.lastSeenLocation}
+              onChange={handleInputChange}
+              placeholder="Son görüldüğü konum"
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <h3>Son Görüldüğü Tarih</h3>
+            <input 
+              type="date"
+              name="lastSeenDate"
+              value={formData.lastSeenDate}
+              onChange={handleInputChange}
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <h3>İletişim Bilgileri</h3>
+            <input 
+              type="text"
+              name="contactInfo"
+              value={formData.contactInfo}
+              onChange={handleInputChange}
+              placeholder="İletişim bilgileri"
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
             <h3>İlan kategorisi</h3>
             <select 
-              name="animalType"
-              value={formData.animalType}
+              name="category"
+              value={formData.category}
               onChange={handleInputChange}
               className="form-select"
             >
@@ -145,24 +183,24 @@ const CreateListingPage: React.FC = () => {
               onChange={handleInputChange}
               className="form-select"
             >
-              <option value="kayip">Kayıp</option>
-              <option value="bulundu">Bulundu</option>
+              <option value="Kayıp">Kayıp</option>
+              <option value="Bulundu">Bulundu</option>
             </select>
           </div>
-        </div>
 
-        <div className="form-group">
-          <h3>İlan ek bilgi</h3>
-          <select 
-            name="additionalInfo"
-            value={formData.additionalInfo}
-            onChange={handleInputChange}
-            className="form-select"
-          >
-            <option value="bos">Boş</option>
-            <option value="odullu">Ödüllü</option>
-            <option value="acil">Acil</option>
-          </select>
+          <div className="form-group">
+            <h3>İlan ek bilgi</h3>
+            <select 
+              name="additionalInfo"
+              value={formData.additionalInfo}
+              onChange={handleInputChange}
+              className="form-select"
+            >
+              <option value="">Boş</option>
+              <option value="Bulana ödül verilecektir">Ödüllü</option>
+              <option value="Acil">Acil</option>
+            </select>
+          </div>
         </div>
 
         <div className="right-section">

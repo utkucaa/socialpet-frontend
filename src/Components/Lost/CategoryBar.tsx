@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './CategoryBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faDove, faCrow } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +32,9 @@ const CategoryBar: React.FC = () => {
         <FontAwesomeIcon icon={faDove} style={{ marginRight: '8px' }} />
         Muhabbet Kuşu
       </span>
-      <button className="lost-button"> + Kayıp İlanı Ver</button>
+      <Link to="/lost/create" className="lost-button">
+        + Kayıp İlanı Ver
+      </Link>
     </div>
   );
 };

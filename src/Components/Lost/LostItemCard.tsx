@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './LostItemCard.css';
 
 interface LostItemCardProps {
+  id: string | number;
   title: string;
   image: string;
   location: string;
@@ -10,6 +12,7 @@ interface LostItemCardProps {
 }
 
 const LostItemCard: React.FC<LostItemCardProps> = ({ 
+  id,
   title, 
   image, 
   location, 
@@ -24,7 +27,9 @@ const LostItemCard: React.FC<LostItemCardProps> = ({
         <p>{animalType}</p>
         <p>{location}</p>
         <p>{timeAgo} ilan verildi</p>
-        <button className="cta-button">İlanı Görüntüle</button>
+        <Link to={`/lost/${id}`} className="cta-button">
+          İlanı Görüntüle
+        </Link>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LostItemCard from './LostItemCard';
+import lostPetService from '../../services/lostPetService';
 import './LostItemList.css';
 
 interface LostAnimal {
@@ -29,34 +30,20 @@ interface ApiListing {
 
 const LostItemList: React.FC = () => {
   const [lostAnimals, setLostAnimals] = useState<LostAnimal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Zaman farkını hesaplayan yardımcı fonksiyon
   const getTimeAgo = (timestamp: number): string => {
-    const now = new Date();
-    const postedTime = new Date(timestamp);
-    const diffInSeconds = Math.floor((now.getTime() - postedTime.getTime()) / 1000);
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
-    if (diffInSeconds < 60) {
-      return 'Az önce';
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} dakika önce`;
-    } else if (diffInHours < 24) {
-      return `${diffInHours} saat önce`;
-    } else if (diffInDays < 7) {
-      return `${diffInDays} gün önce`;
-    } else if (diffInDays < 30) {
-      const weeks = Math.floor(diffInDays / 7);
-      return `${weeks} hafta önce`;
-    } else if (diffInDays < 365) {
-      const months = Math.floor(diffInDays / 30);
-      return `${months} ay önce`;
-    } else {
-      const years = Math.floor(diffInDays / 365);
-      return `${years} yıl önce`;
-    }
+    if (days > 0) return `${days} gün önce`;
+    if (hours > 0) return `${hours} saat önce`;
+    if (minutes > 0) return `${minutes} dakika önce`;
+    return 'Az önce';
   };
 
   useEffect(() => {
@@ -66,14 +53,11 @@ const LostItemList: React.FC = () => {
     // API'den ilanları çek
     const fetchListings = async (): Promise<void> => {
       try {
-        const response = await fetch('http://localhost:3000/api/lost-pets');
-        if (!response.ok) {
-          throw new Error('API isteği başarısız oldu');
-        }
-        const apiListings: ApiListing[] = await response.json();
+        setIsLoading(true);
+        const apiListings = await lostPetService.getLostPets();
         
         // API'den gelen ilanları formatlayarak birleştir
-        const formattedApiListings: LostAnimal[] = apiListings.map(listing => ({
+        const formattedApiListings: LostAnimal[] = apiListings.map((listing: ApiListing) => ({
           id: listing.id || Date.now(),
           title: listing.title || 'İsimsiz İlan',
           image: listing.image || '/default-image.jpg',
@@ -100,32 +84,25 @@ const LostItemList: React.FC = () => {
         const sortedListings = allListings.sort((a, b) => b.timestamp - a.timestamp);
         
         setLostAnimals(sortedListings);
+        setError(null);
       } catch (error) {
-        console.error('İlanlar çekilirken hata oluştu:', error);
-        // Hata durumunda sadece localStorage'daki ilanları göster
-        const formattedLocalListings = savedListings.map(listing => ({
-          ...listing,
-          timestamp: listing.timestamp || Date.now(),
-          timeAgo: getTimeAgo(listing.timestamp || Date.now())
-        }));
-        setLostAnimals(formattedLocalListings);
+        console.error('Error fetching lost pets:', error);
+        setError('İlanlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchListings();
-
-    // Her dakika zaman bilgisini güncelle
-    const interval = setInterval(() => {
-      setLostAnimals(prevListings => 
-        prevListings.map(listing => ({
-          ...listing,
-          timeAgo: getTimeAgo(listing.timestamp)
-        }))
-      );
-    }, 60000); // 60 saniye
-
-    return () => clearInterval(interval);
   }, []);
+
+  if (isLoading) {
+    return <div className="loading">Yükleniyor...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="lost-item-list">
