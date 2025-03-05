@@ -31,8 +31,30 @@ export const deleteMedicalRecord = async (medicalRecordId: string) => {
 
 // Vaccination API calls
 export const getVaccinations = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/vaccinations`);
-  return response.data;
+  if (!medicalRecordId) {
+    console.error('getVaccinations called without medicalRecordId');
+    throw new Error('Medical record ID is required');
+  }
+  
+  try {
+    console.log(`Fetching vaccinations for medical record ID: ${medicalRecordId}`);
+    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/vaccinations`);
+    
+    if (!response.data) {
+      console.warn('No data received from vaccinations API');
+      return [];
+    }
+    
+    if (!Array.isArray(response.data)) {
+      console.warn('Unexpected data format received from vaccinations API:', response.data);
+      return [];
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error in getVaccinations:', error);
+    throw error;
+  }
 };
 
 export const addVaccination = async (medicalRecordId: string, vaccination: { 
@@ -40,11 +62,34 @@ export const addVaccination = async (medicalRecordId: string, vaccination: {
   vaccinationDate: string, 
   veterinarian: string 
 }) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/vaccinations`, 
-    vaccination
-  );
-  return response.data;
+  if (!medicalRecordId) {
+    console.error('addVaccination called without medicalRecordId');
+    throw new Error('Medical record ID is required');
+  }
+  
+  if (!vaccination.vaccineName || !vaccination.vaccinationDate || !vaccination.veterinarian) {
+    console.error('addVaccination called with incomplete vaccination data:', vaccination);
+    throw new Error('Vaccination data is incomplete');
+  }
+  
+  try {
+    console.log(`Adding vaccination for medical record ID: ${medicalRecordId}`, vaccination);
+    const response = await axiosInstance.post(
+      `/api/medical-records/${medicalRecordId}/vaccinations`, 
+      vaccination
+    );
+    
+    if (!response.data) {
+      console.warn('No data received from add vaccination API');
+      throw new Error('Failed to add vaccination');
+    }
+    
+    console.log('Vaccination added successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in addVaccination:', error);
+    throw error;
+  }
 };
 
 // Treatment API calls

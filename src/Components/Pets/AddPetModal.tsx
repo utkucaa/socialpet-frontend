@@ -23,16 +23,42 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
   const [animalTypes, setAnimalTypes] = useState([]);
   const [breeds, setBreeds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingBreeds, setIsFetchingBreeds] = useState(false);
   const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    animalType: '',
+    breedId: ''
+  });
   
   // Get owner ID from JWT token
   const getOwnerId = () => {
-    const user = localStorage.getItem('user');
-    const userData = JSON.parse(user);
-    const ownerId = userData.id;
+    try {
+      const user = localStorage.getItem('user');
+      if (!user) return null;
+      
+      const userData = JSON.parse(user);
+      const ownerId = userData.id;
+      
+      if (!ownerId) return null;
+      return ownerId;
+    } catch (error) {
+      console.error('Error getting owner ID:', error);
+      return null;
+    }
+  };
+  
+  // Convert animal type to backend format
+  const convertAnimalTypeToBackendFormat = (type) => {
+    const typeMap = {
+      'Köpek': 'DOG',
+      'Kedi': 'CAT',
+      'Kuş': 'BIRD'
+    };
     
-    if (!ownerId) return null;
-    return ownerId;
+    return typeMap[type] || type;
   };
   
   // Fetch animal types on component mount
@@ -58,31 +84,105 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
         return;
       }
       
+      setIsFetchingBreeds(true);
+      setError('');
+      
       try {
-        const data = await getBreedsByAnimalType(formData.animalType == "Köpek" ? "DOG" : formData.animalType == "Kedi" ? "CAT" : formData.animalType == "Kuş" ? "BIRD" : "");
+        const backendAnimalType = convertAnimalTypeToBackendFormat(formData.animalType);
+        const data = await getBreedsByAnimalType(backendAnimalType);
         setBreeds(data);
       } catch (err) {
         console.error('Error fetching breeds:', err);
         setError('Failed to load breeds. Please try again.');
+      } finally {
+        setIsFetchingBreeds(false);
       }
     };
     
     fetchBreeds();
   }, [formData.animalType]);
   
+  const validateField = (name, value) => {
+    let errorMessage = '';
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          errorMessage = 'Pet name is required';
+        }
+        break;
+      case 'age':
+        if (!value) {
+          errorMessage = 'Age is required';
+        } else if (isNaN(value) || parseInt(value) < 0) {
+          errorMessage = 'Please enter a valid age';
+        }
+        break;
+      case 'gender':
+        if (!value) {
+          errorMessage = 'Gender is required';
+        }
+        break;
+      case 'animalType':
+        if (!value) {
+          errorMessage = 'Animal type is required';
+        }
+        break;
+      case 'breedId':
+        if (!value && formData.animalType) {
+          errorMessage = 'Breed is required';
+        }
+        break;
+      default:
+        break;
+    }
+    
+    return errorMessage;
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Update form data
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Reset breed when animal type changes
     if (name === 'animalType') {
       setFormData(prev => ({ ...prev, breedId: '' }));
     }
+    
+    // Validate field
+    const errorMessage = validateField(name, value);
+    setFormErrors(prev => ({ ...prev, [name]: errorMessage }));
   };
-
+  
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...formErrors };
+    
+    // Validate each field
+    Object.keys(formData).forEach(field => {
+      const errorMessage = validateField(field, formData[field]);
+      newErrors[field] = errorMessage;
+      
+      if (errorMessage) {
+        isValid = false;
+      }
+    });
+    
+    setFormErrors(newErrors);
+    return isValid;
+  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) {
+      setError('Please fill in all required fields correctly.');
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
     
@@ -92,33 +192,12 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
         throw new Error('User not authenticated');
       }
       
-      // Validate form data
-      if (!formData.name.trim()) {
-        throw new Error('Pet name is required');
-      }
-      
-      if (!formData.age || isNaN(formData.age) || parseInt(formData.age) < 0) {
-        throw new Error('Please enter a valid age');
-      }
-      
-      if (!formData.gender) {
-        throw new Error('Gender is required');
-      }
-      
-      if (!formData.animalType) {
-        throw new Error('Animal type is required');
-      }
-      
-      if (!formData.breedId) {
-        throw new Error('Breed is required');
-      }
-      
       // Create pet object
       const petData = {
         name: formData.name.trim(),
         age: parseInt(formData.age),
         gender: formData.gender,
-        animalType: formData.animalType == "Köpek" ? "DOG" : formData.animalType == "Kedi" ? "CAT" : formData.animalType == "Kuş" ? "BIRD" : "",
+        animalType: convertAnimalTypeToBackendFormat(formData.animalType),
         ownerId: ownerId,
         breedId: parseInt(formData.breedId)
       };
@@ -165,9 +244,14 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.name ? 'border-red-300' : ''
+                }`}
                 required
               />
+              {formErrors.name && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
+              )}
             </div>
             
             {/* Age */}
@@ -182,9 +266,14 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                 min="0"
                 value={formData.age}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.age ? 'border-red-300' : ''
+                }`}
                 required
               />
+              {formErrors.age && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.age}</p>
+              )}
             </div>
             
             {/* Gender */}
@@ -197,13 +286,18 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.gender ? 'border-red-300' : ''
+                }`}
                 required
               >
                 <option value="">Cinsiyet Seçin</option>
                 <option value="Male">Erkek</option>
                 <option value="Female">Dişi</option>
               </select>
+              {formErrors.gender && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.gender}</p>
+              )}
             </div>
             
             {/* Animal Type */}
@@ -216,7 +310,9 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                 name="animalType"
                 value={formData.animalType}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.animalType ? 'border-red-300' : ''
+                }`}
                 required
               >
                 <option value="">Hayvan Cinsi Seçin</option>
@@ -226,6 +322,9 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                   </option>
                 ))}
               </select>
+              {formErrors.animalType && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.animalType}</p>
+              )}
             </div>
             
             {/* Breed */}
@@ -238,20 +337,31 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose }) => {
                 name="breedId"
                 value={formData.breedId}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                disabled={!formData.animalType}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.breedId ? 'border-red-300' : ''
+                }`}
+                disabled={!formData.animalType || isFetchingBreeds}
                 required
               >
-                <option value="">{formData.animalType} Cinsi Seçin</option>
+                <option value="">
+                  {isFetchingBreeds 
+                    ? 'Yükleniyor...' 
+                    : formData.animalType 
+                      ? `${formData.animalType} Cinsi Seçin` 
+                      : 'Önce hayvan cinsi seçin'}
+                </option>
                 {breeds.map((breed) => (
                   <option key={breed.id} value={breed.id}>
                     {breed.name}
                   </option>
                 ))}
               </select>
+              {formErrors.breedId && formData.animalType && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.breedId}</p>
+              )}
               {!formData.animalType && (
                 <p className="mt-1 text-sm text-gray-500">
-                  Lütfen hayvan cinsi seçin
+                  Lütfen önce hayvan cinsi seçin
                 </p>
               )}
             </div>

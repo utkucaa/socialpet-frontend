@@ -19,45 +19,60 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ medicalRec
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [veterinarian, setVeterinarian] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Counter to force refresh
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
-  useEffect(() => {
-    const fetchVaccinations = async () => {
-      if (!medicalRecordId) {
-        setIsLoading(false);
+  // Fetch vaccinations from backend
+  const fetchVaccinations = async () => {
+    if (!medicalRecordId) {
+      setIsLoading(false);
+      setVaccinations([]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Make API call to get vaccinations
+      const response = await getVaccinations(medicalRecordId);
+      
+      // Handle empty or invalid response
+      if (!response || !Array.isArray(response)) {
+        setVaccinations([]);
         return;
       }
       
-      try {
-        setIsLoading(true);
-        const data = await getVaccinations(medicalRecordId);
-        
-        // Transform API data to match our component's Vaccination type
-        const transformedVaccinations: Vaccination[] = data.map((item: any) => ({
-          id: item.id.toString(),
-          name: item.vaccineName,
-          date: item.vaccinationDate,
-          veterinarian: item.veterinarian
-        }));
-        
-        setVaccinations(transformedVaccinations);
-      } catch (err) {
-        console.error('Error fetching vaccinations:', err);
-        setError('Failed to load vaccinations. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      // Transform API data to match our component's Vaccination type
+      const transformedVaccinations = response.map(item => ({
+        id: item.id?.toString() || String(Math.random()),
+        name: item.vaccineName || '',
+        date: item.vaccinationDate || '',
+        veterinarian: item.veterinarian || ''
+      }));
+      
+      // Update state with fetched vaccinations
+      setVaccinations(transformedVaccinations);
+    } catch (err) {
+      console.error('Error fetching vaccinations:', err);
+      setError('Failed to load vaccinations.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // Fetch vaccinations whenever medicalRecordId changes or refreshCounter changes
+  useEffect(() => {
     fetchVaccinations();
-  }, [medicalRecordId]);
+  }, [medicalRecordId, refreshCounter]);
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!medicalRecordId) {
-      // This should not happen as the parent component ensures medicalRecordId is available
-      console.error('Attempted to add vaccination without a medical record ID');
-      setError('System error: Unable to add vaccination. Please try again later.');
+      setError('Medical record ID is missing');
       return;
     }
     
@@ -68,32 +83,29 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ medicalRec
     
     try {
       setIsSubmitting(true);
+      setError(null);
       
-      const newVaccination = await addVaccination(medicalRecordId, {
+      // Create vaccination data object
+      const vaccinationData = {
         vaccineName,
         vaccinationDate,
         veterinarian
-      });
-      
-      // Transform the API response to match our component's Vaccination type
-      const transformedVaccination: Vaccination = {
-        id: newVaccination.id.toString(),
-        name: newVaccination.vaccineName,
-        date: newVaccination.vaccinationDate,
-        veterinarian: newVaccination.veterinarian
       };
       
-      setVaccinations([...vaccinations, transformedVaccination]);
+      // Make API call to add vaccination
+      await addVaccination(medicalRecordId, vaccinationData);
       
       // Reset form
       setVaccineName('');
       setVaccinationDate('');
       setVeterinarian('');
       setShowModal(false);
-      setError(null); // Clear any previous errors
+      
+      // Force refresh by incrementing counter
+      setRefreshCounter(prev => prev + 1);
     } catch (err) {
       console.error('Error adding vaccination:', err);
-      setError('Failed to add vaccination. Please try again later.');
+      setError('Failed to add vaccination.');
     } finally {
       setIsSubmitting(false);
     }
@@ -120,6 +132,12 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ medicalRec
       ) : error ? (
         <div className="text-center py-8">
           <p className="text-red-500">{error}</p>
+          <button 
+            onClick={() => setRefreshCounter(prev => prev + 1)}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       ) : vaccinations.length === 0 ? (
         <div className="text-center py-8">
@@ -193,7 +211,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ medicalRec
                   type="button"
                   onClick={() => {
                     setShowModal(false);
-                    setError(null); // Clear any errors when closing
+                    setError(null);
                   }}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   disabled={isSubmitting}

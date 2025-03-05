@@ -11,7 +11,7 @@ import { MedicationsPanel } from './MedicationsPanel';
 import { AllergiesPanel } from './AllergiesPanel';
 import { WeightRecordsPanel } from './WeightRecordsPanel';
 import { getPetById } from '../../services/petService';
-import { getMedicalRecord, createMedicalRecord } from '../../services/medicalRecordService';
+import { getMedicalRecord, getMedicalRecordByPetId, createMedicalRecord } from '../../services/medicalRecordService';
 import { Pet } from './types';
 
 function MedicalRecord() {
@@ -30,8 +30,15 @@ function MedicalRecord() {
           throw new Error('Pet ID is required');
         }
         
+        console.log('Fetching pet data for petId:', petId);
+        
         // Fetch pet data
         const petData = await getPetById(petId);
+        console.log('Pet data received:', petData);
+        
+        if (!petData || !petData.id) {
+          throw new Error('Pet not found or invalid pet data received');
+        }
         
         // Transform the API pet data to match our component's Pet type
         const transformedPet: Pet = {
@@ -48,25 +55,34 @@ function MedicalRecord() {
         
         // Fetch or create medical record
         setIsMedicalRecordLoading(true);
+        
         try {
-          const record = await getMedicalRecord(petId).then(response => {
-            if (response && response.id) {
-              setMedicalRecordId(response.id.toString());
-              return;
-            }
-          }).catch(async (err) => {
-            console.error('Error fetching medical record:', err);
-            // If medical record doesn't exist, create one
+          console.log('Fetching medical record by pet ID:', petId);
+          // First try to get the medical record by pet ID
+          const medicalRecord = await getMedicalRecordByPetId(petId);
+          
+          if (medicalRecord && medicalRecord.id) {
+            console.log('Medical record found:', medicalRecord);
+            setMedicalRecordId(medicalRecord.id.toString());
+          } else {
+            console.log('No medical record found, creating new one');
+            // If no medical record exists, create one
+            const newRecord = await createMedicalRecord(petId);
+            console.log('New medical record created:', newRecord);
+            setMedicalRecordId(newRecord.id.toString());
+          }
+        } catch (err) {
+          console.error('Error fetching medical record:', err);
+          
+          try {
             console.log('Creating new medical record for pet');
             const newRecord = await createMedicalRecord(petId);
+            console.log('New medical record created:', newRecord);
             setMedicalRecordId(newRecord.id.toString());
-          });
-        } catch (err) {
-          console.log("aaa geldi!")
-          // If medical record doesn't exist, create one
-          console.log('Creating new medical record for pet');
-          const newRecord = await createMedicalRecord(petId);
-          setMedicalRecordId(newRecord.id.toString());
+          } catch (createErr) {
+            console.error('Error creating medical record:', createErr);
+            setError('Failed to create medical record. Please try again later.');
+          }
         } finally {
           setIsMedicalRecordLoading(false);
         }
@@ -81,6 +97,29 @@ function MedicalRecord() {
     fetchPetAndMedicalRecord();
   }, [petId]);
 
+  // Function to manually refresh the medical record
+  const refreshMedicalRecord = async () => {
+    if (!petId) return;
+    
+    try {
+      setIsMedicalRecordLoading(true);
+      
+      const medicalRecord = await getMedicalRecordByPetId(petId);
+      
+      if (medicalRecord && medicalRecord.id) {
+        setMedicalRecordId(medicalRecord.id.toString());
+      } else {
+        const newRecord = await createMedicalRecord(petId);
+        setMedicalRecordId(newRecord.id.toString());
+      }
+    } catch (err) {
+      console.error('Error refreshing medical record:', err);
+      setError('Failed to refresh medical record');
+    } finally {
+      setIsMedicalRecordLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -89,10 +128,24 @@ function MedicalRecord() {
     );
   }
 
-  if (error || !pet) {
+  if (error) {
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-        <div className="text-xl text-red-600 mb-4">{error || 'Pet not found'}</div>
+        <div className="text-xl text-red-600 mb-4">{error}</div>
+        <button
+          onClick={() => navigate('/pets')}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Back to Pets
+        </button>
+      </div>
+    );
+  }
+
+  if (!pet) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+        <div className="text-xl text-red-600 mb-4">Pet not found</div>
         <button
           onClick={() => navigate('/pets')}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -117,13 +170,15 @@ function MedicalRecord() {
         <p className="text-red-500">Unable to load or create medical record. Please try again later.</p>
         <button 
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          onClick={() => window.location.reload()}
+          onClick={refreshMedicalRecord}
         >
           Try Again
         </button>
       </div>
     );
   }
+
+  console.log('Rendering MedicalRecord with medicalRecordId:', medicalRecordId);
 
   return (
     <div className="min-h-screen bg-gray-100">
