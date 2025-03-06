@@ -159,13 +159,37 @@ export const addMedication = async (medicalRecordId: string, medication: {
 
 // Allergy API calls
 export const getAllergies = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/allergies`);
-  return response.data;
+  if (!medicalRecordId) {
+    console.error('getAllergies called without medicalRecordId');
+    throw new Error('Medical record ID is required');
+  }
+  
+  try {
+    console.log(`Fetching allergies for medical record ID: ${medicalRecordId}`);
+    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/allergies`);
+    
+    if (!response.data) {
+      console.warn('No data received from allergies API');
+      return [];
+    }
+    
+    if (!Array.isArray(response.data)) {
+      console.warn('Unexpected data format received from allergies API:', response.data);
+      return [];
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error in getAllergies:', error);
+    throw error;
+  }
 };
 
 export const addAllergy = async (medicalRecordId: string, allergy: {
   allergen: string,
-  reaction: string
+  reaction: string,
+  severity: string,
+  notes?: string
 }) => {
   const response = await axiosInstance.post(
     `/api/medical-records/${medicalRecordId}/allergies`,
@@ -176,8 +200,30 @@ export const addAllergy = async (medicalRecordId: string, allergy: {
 
 // Weight Record API calls
 export const getWeightRecords = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/weight-records`);
-  return response.data;
+  if (!medicalRecordId) {
+    console.error('getWeightRecords called without medicalRecordId');
+    throw new Error('Medical record ID is required');
+  }
+  
+  try {
+    console.log(`Fetching weight records for medical record ID: ${medicalRecordId}`);
+    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/weight-records`);
+    
+    if (!response.data) {
+      console.warn('No data received from weight records API');
+      return [];
+    }
+    
+    if (!Array.isArray(response.data)) {
+      console.warn('Unexpected data format received from weight records API:', response.data);
+      return [];
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error in getWeightRecords:', error);
+    throw error;
+  }
 };
 
 export const getLatestWeightRecord = async (medicalRecordId: string) => {
@@ -186,12 +232,37 @@ export const getLatestWeightRecord = async (medicalRecordId: string) => {
 };
 
 export const addWeightRecord = async (medicalRecordId: string, weightRecord: {
+  weight: number,
+  unit: string,
   recordDate: string,
-  weight: number
+  notes?: string
 }) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/weight-records`,
-    weightRecord
-  );
-  return response.data;
+  if (!medicalRecordId) {
+    console.error('addWeightRecord called without medicalRecordId');
+    throw new Error('Medical record ID is required');
+  }
+  
+  if (!weightRecord.weight || !weightRecord.recordDate) {
+    console.error('addWeightRecord called with incomplete weight record data:', weightRecord);
+    throw new Error('Weight record data is incomplete');
+  }
+  
+  try {
+    console.log(`Adding weight record for medical record ID: ${medicalRecordId}`, weightRecord);
+    const response = await axiosInstance.post(
+      `/api/medical-records/${medicalRecordId}/weight-records`,
+      weightRecord
+    );
+    
+    if (!response.data) {
+      console.warn('No data received from add weight record API');
+      throw new Error('Failed to add weight record');
+    }
+    
+    console.log('Weight record added successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in addWeightRecord:', error);
+    throw error;
+  }
 }; 

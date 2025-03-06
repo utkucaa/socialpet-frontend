@@ -21,35 +21,59 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ medicalRecordId 
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const fetchAllergies = async () => {
-      if (!medicalRecordId) {
+  const fetchAllergies = async () => {
+    if (!medicalRecordId) {
+      console.log('No medical record ID provided, skipping allergies fetch');
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log(`Fetching allergies for medical record ID: ${medicalRecordId}`);
+    
+    try {
+      setIsLoading(true);
+      const data = await getAllergies(medicalRecordId);
+      
+      console.log('Allergies data received:', data);
+      
+      if (!data) {
+        console.warn('No data received from allergies API');
+        setAllergies([]);
         setIsLoading(false);
         return;
       }
       
-      try {
-        setIsLoading(true);
-        const data = await getAllergies(medicalRecordId);
-        
-        // Transform API data to match our component's Allergy type
-        const transformedAllergies: Allergy[] = data.map((item: any) => ({
-          id: item.id.toString(),
-          name: item.allergyName,
-          severity: item.severity.toLowerCase() as 'mild' | 'moderate' | 'severe',
-          symptoms: item.symptoms,
-          notes: item.notes || ''
-        }));
-        
-        setAllergies(transformedAllergies);
-      } catch (err) {
-        console.error('Error fetching allergies:', err);
-        setError('Failed to load allergies. Please try again later.');
-      } finally {
+      if (!Array.isArray(data)) {
+        console.warn('Unexpected data format received from allergies API:', data);
+        setError('Received invalid data format from server');
         setIsLoading(false);
+        return;
       }
-    };
+      
+      // Transform API data to match our component's Allergy type
+      const transformedAllergies: Allergy[] = data.map((item: any) => {
+        console.log('Processing allergy item:', item);
+        return {
+          id: item.id.toString(),
+          name: item.allergyName || item.allergen || '',
+          severity: (item.severity || 'mild').toLowerCase() as 'mild' | 'moderate' | 'severe',
+          symptoms: item.symptoms || item.reaction || '',
+          notes: item.notes || ''
+        };
+      });
+      
+      console.log('Transformed allergies:', transformedAllergies);
+      setAllergies(transformedAllergies);
+    } catch (err) {
+      console.error('Error fetching allergies:', err);
+      console.error('Error details:', err.response?.data || err.message);
+      setError('Failed to load allergies. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchAllergies();
   }, [medicalRecordId]);
 
@@ -72,22 +96,11 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ medicalRecordId 
       setIsSubmitting(true);
       
       const newAllergy = await addAllergy(medicalRecordId, {
-        allergyName,
+        allergen: allergyName,
+        reaction: symptoms,
         severity: severity.charAt(0).toUpperCase() + severity.slice(1), // Capitalize first letter
-        symptoms,
-        notes
+        notes: notes
       });
-      
-      // Transform the API response to match our component's Allergy type
-      const transformedAllergy: Allergy = {
-        id: newAllergy.id.toString(),
-        name: newAllergy.allergyName,
-        severity: newAllergy.severity.toLowerCase() as 'mild' | 'moderate' | 'severe',
-        symptoms: newAllergy.symptoms,
-        notes: newAllergy.notes || ''
-      };
-      
-      setAllergies([...allergies, transformedAllergy]);
       
       // Reset form
       setAllergyName('');
@@ -96,6 +109,10 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ medicalRecordId 
       setNotes('');
       setShowModal(false);
       setError(null); // Clear any previous errors
+      
+      // Refresh the allergies list
+      await fetchAllergies();
+      
     } catch (err) {
       console.error('Error adding allergy:', err);
       setError('Failed to add allergy. Please try again later.');

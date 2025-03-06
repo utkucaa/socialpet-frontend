@@ -43,40 +43,74 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const fetchWeightRecords = async () => {
-      if (!medicalRecordId) {
+  const fetchWeightRecords = async () => {
+    if (!medicalRecordId) {
+      console.log('No medical record ID provided, skipping weight records fetch');
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log(`Fetching weight records for medical record ID: ${medicalRecordId}`);
+    
+    try {
+      setIsLoading(true);
+      setError(null); // Clear any previous errors
+      
+      const data = await getWeightRecords(medicalRecordId);
+      
+      console.log('Weight records data received:', data);
+      
+      if (!data) {
+        console.warn('No data received from weight records API');
+        setWeightRecords([]);
         setIsLoading(false);
         return;
       }
       
-      try {
-        setIsLoading(true);
-        const data = await getWeightRecords(medicalRecordId);
-        
-        // Transform API data to match our component's WeightRecord type
-        const transformedWeightRecords: WeightRecord[] = data.map((item: any) => ({
-          id: item.id.toString(),
-          weight: parseFloat(item.weight),
-          unit: item.unit.toLowerCase() as 'kg' | 'lb',
-          date: item.recordDate,
-          notes: item.notes || ''
-        }));
-        
-        // Sort by date (oldest to newest)
-        transformedWeightRecords.sort((a, b) => 
-          new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-        
-        setWeightRecords(transformedWeightRecords);
-      } catch (err) {
-        console.error('Error fetching weight records:', err);
-        setError('Failed to load weight records. Please try again later.');
-      } finally {
+      if (!Array.isArray(data)) {
+        console.warn('Unexpected data format received from weight records API:', data);
+        setError('Received invalid data format from server');
         setIsLoading(false);
+        return;
       }
-    };
+      
+      // Transform API data to match our component's WeightRecord type
+      const transformedWeightRecords: WeightRecord[] = data.map((item: any) => {
+        console.log('Processing weight record item:', item);
+        
+        // Handle potential missing or invalid data
+        const weightValue = parseFloat(item.weight);
+        if (isNaN(weightValue)) {
+          console.warn('Invalid weight value:', item.weight);
+        }
+        
+        return {
+          id: item.id ? item.id.toString() : Math.random().toString(),
+          weight: isNaN(weightValue) ? 0 : weightValue,
+          unit: (item.unit || 'kg').toLowerCase() as 'kg' | 'lb',
+          date: item.recordDate || new Date().toISOString().split('T')[0],
+          notes: item.notes || ''
+        };
+      });
+      
+      // Sort by date (oldest to newest)
+      transformedWeightRecords.sort((a, b) => 
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+      
+      console.log('Transformed weight records:', transformedWeightRecords);
+      setWeightRecords(transformedWeightRecords);
+    } catch (err) {
+      console.error('Error fetching weight records:', err);
+      console.error('Error details:', err.response?.data || err.message);
+      setError('Failed to load weight records. Please try again later.');
+      setWeightRecords([]); // Reset weight records on error
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchWeightRecords();
   }, [medicalRecordId]);
 
@@ -111,22 +145,6 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
         notes
       });
       
-      // Transform the API response to match our component's WeightRecord type
-      const transformedWeightRecord: WeightRecord = {
-        id: newWeightRecord.id.toString(),
-        weight: parseFloat(newWeightRecord.weight),
-        unit: newWeightRecord.unit.toLowerCase() as 'kg' | 'lb',
-        date: newWeightRecord.recordDate,
-        notes: newWeightRecord.notes || ''
-      };
-      
-      // Add new record and sort by date
-      const updatedRecords = [...weightRecords, transformedWeightRecord].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
-      
-      setWeightRecords(updatedRecords);
-      
       // Reset form
       setWeight('');
       setUnit('kg');
@@ -134,6 +152,10 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
       setNotes('');
       setShowModal(false);
       setError(null); // Clear any previous errors
+      
+      // Refresh the weight records list
+      await fetchWeightRecords();
+      
     } catch (err) {
       console.error('Error adding weight record:', err);
       setError('Failed to add weight record. Please try again later.');
