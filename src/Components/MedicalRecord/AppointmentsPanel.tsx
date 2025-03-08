@@ -8,10 +8,10 @@ import { getAppointments, addAppointment } from '../../services/medicalRecordSer
 import 'react-day-picker/dist/style.css';
 
 interface AppointmentsPanelProps {
-  medicalRecordId: string | null;
+  petId: string | null;
 }
 
-export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRecordId }) => {
+export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ petId }) => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,24 +27,29 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      if (!medicalRecordId) {
+      if (!petId) {
         setIsLoading(false);
         return;
       }
       
       try {
         setIsLoading(true);
-        const data = await getAppointments(medicalRecordId);
+        const data = await getAppointments(petId);
+        console.log('Appointments data received:', data);
         
         // Transform API data to match our component's Appointment type
-        const transformedAppointments: Appointment[] = data.map((item: any) => ({
-          id: item.id.toString(),
-          date: item.appointmentDate,
-          time: item.appointmentTime,
-          reason: item.reason,
-          veterinarian: item.veterinarian,
-          notes: item.notes || ''
-        }));
+        const transformedAppointments: Appointment[] = data.map((item: any) => {
+          // Parse the appointmentDate as a Date object
+          const appointmentDateTime = new Date(item.appointmentDate);
+          
+          return {
+            id: item.id.toString(),
+            date: appointmentDateTime.toISOString(),
+            reason: item.reason,
+            veterinarian: item.veterinarian,
+            notes: item.notes || ''
+          };
+        });
         
         setAppointments(transformedAppointments);
       } catch (err) {
@@ -56,14 +61,14 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
     };
 
     fetchAppointments();
-  }, [medicalRecordId]);
+  }, [petId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!medicalRecordId) {
-      // This should not happen as the parent component ensures medicalRecordId is available
-      console.error('Attempted to add appointment without a medical record ID');
+    if (!petId) {
+      // This should not happen as the parent component ensures petId is available
+      console.error('Attempted to add appointment without a pet ID');
       setError('System error: Unable to add appointment. Please try again later.');
       return;
     }
@@ -76,19 +81,24 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
     try {
       setIsSubmitting(true);
       
-      const newAppointment = await addAppointment(medicalRecordId, {
-        appointmentDate,
-        appointmentTime,
+      // Combine date and time into a single ISO string
+      const dateTimeString = `${appointmentDate}T${appointmentTime}:00`;
+      console.log('Submitting appointment with date:', dateTimeString);
+      
+      const newAppointment = await addAppointment(petId, {
+        appointmentDate: dateTimeString,
         reason,
         veterinarian,
         notes
       });
       
+      console.log('New appointment created:', newAppointment);
+      
       // Transform the API response to match our component's Appointment type
+      const appointmentDateTime = new Date(newAppointment.appointmentDate);
       const transformedAppointment: Appointment = {
         id: newAppointment.id.toString(),
-        date: newAppointment.appointmentDate,
-        time: newAppointment.appointmentTime,
+        date: appointmentDateTime.toISOString(),
         reason: newAppointment.reason,
         veterinarian: newAppointment.veterinarian,
         notes: newAppointment.notes || ''
@@ -114,12 +124,12 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
 
   // Separate appointments into upcoming and past
   const upcomingAppointments = appointments.filter(appointment => {
-    const appointmentDateTime = new Date(`${appointment.date}T${appointment.time}`);
+    const appointmentDateTime = new Date(appointment.date);
     return !isPast(appointmentDateTime);
   });
   
   const pastAppointments = appointments.filter(appointment => {
-    const appointmentDateTime = new Date(`${appointment.date}T${appointment.time}`);
+    const appointmentDateTime = new Date(appointment.date);
     return isPast(appointmentDateTime);
   });
 
@@ -130,7 +140,7 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          disabled={!medicalRecordId}
+          disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
           Schedule Appointment
@@ -176,7 +186,7 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
                     </div>
                     <div className="space-y-2 text-sm text-gray-600">
                       <p>Date: {format(new Date(appointment.date), 'MMM dd, yyyy')}</p>
-                      <p>Time: {appointment.time}</p>
+                      <p>Time: {format(new Date(appointment.date), 'HH:mm')}</p>
                       <p>Veterinarian: {appointment.veterinarian}</p>
                       {appointment.notes && <p>Notes: {appointment.notes}</p>}
                     </div>
@@ -209,7 +219,7 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ medicalRec
                     </div>
                     <div className="space-y-2 text-sm text-gray-600">
                       <p>Date: {format(new Date(appointment.date), 'MMM dd, yyyy')}</p>
-                      <p>Time: {appointment.time}</p>
+                      <p>Time: {format(new Date(appointment.date), 'HH:mm')}</p>
                       <p>Veterinarian: {appointment.veterinarian}</p>
                       {appointment.notes && <p>Notes: {appointment.notes}</p>}
                     </div>

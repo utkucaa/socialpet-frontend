@@ -14,6 +14,7 @@ interface FormData {
   lastSeenDate: string;
   lastSeenLocation: string;
   imageUrl: string;
+  animalType: string;
 }
 
 const CreateListingPage: React.FC = () => {
@@ -30,7 +31,8 @@ const CreateListingPage: React.FC = () => {
     contactInfo: '',
     lastSeenDate: '',
     lastSeenLocation: '',
-    imageUrl: ''
+    imageUrl: '',
+    animalType: ''
   });
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -60,14 +62,20 @@ const CreateListingPage: React.FC = () => {
   const handleSubmit = async (): Promise<void> => {
     try {
       const user = localStorage.getItem("user");
-      const userData = JSON.parse(user);
+      const userData = user ? JSON.parse(user) : null;
       // TODO: Replace with actual user ID from authentication
+      if (!userData) {
+        console.error("User data is missing in localStorage");
+        return;
+      }
       const userId = userData.id; // This should come from your auth context/state
       
       await lostPetService.createLostPet(userId, {
         ...formData,
         timestamp: Date.now(),
-        viewCount: 0
+        viewCount: 0,
+        image: formData.imageUrl || "",  // Eğer boşsa varsayılan olarak boş string ata
+        animalType: formData.animalType || "Unknown"
       });
 
       // Ana sayfaya yönlendir

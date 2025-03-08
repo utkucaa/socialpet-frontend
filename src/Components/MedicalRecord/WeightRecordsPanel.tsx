@@ -27,10 +27,10 @@ ChartJS.register(
 );
 
 interface WeightRecordsPanelProps {
-  medicalRecordId: string | null;
+  petId: string | null;
 }
 
-export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalRecordId }) => {
+export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId }) => {
   const [weightRecords, setWeightRecords] = useState<WeightRecord[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,19 +44,19 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchWeightRecords = async () => {
-    if (!medicalRecordId) {
-      console.log('No medical record ID provided, skipping weight records fetch');
+    if (!petId) {
+      console.log('No pet ID provided, skipping weight records fetch');
       setIsLoading(false);
       return;
     }
     
-    console.log(`Fetching weight records for medical record ID: ${medicalRecordId}`);
+    console.log(`Fetching weight records for pet ID: ${petId}`);
     
     try {
       setIsLoading(true);
       setError(null); // Clear any previous errors
       
-      const data = await getWeightRecords(medicalRecordId);
+      const data = await getWeightRecords(petId);
       
       console.log('Weight records data received:', data);
       
@@ -112,14 +112,14 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
 
   useEffect(() => {
     fetchWeightRecords();
-  }, [medicalRecordId]);
+  }, [petId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!medicalRecordId) {
-      // This should not happen as the parent component ensures medicalRecordId is available
-      console.error('Attempted to add weight record without a medical record ID');
+    if (!petId) {
+      // This should not happen as the parent component ensures petId is available
+      console.error('Attempted to add weight record without a pet ID');
       setError('System error: Unable to add weight record. Please try again later.');
       return;
     }
@@ -138,12 +138,21 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
     try {
       setIsSubmitting(true);
       
-      const newWeightRecord = await addWeightRecord(medicalRecordId, {
+      console.log('Submitting weight record with data:', {
         weight: weightValue,
         unit: unit.toUpperCase(),
         recordDate: date,
         notes
       });
+      
+      const newWeightRecord = await addWeightRecord(petId, {
+        weight: weightValue,
+        unit: unit.toUpperCase(),
+        recordDate: date,
+        notes
+      });
+      
+      console.log('New weight record created:', newWeightRecord);
       
       // Reset form
       setWeight('');
@@ -206,7 +215,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          disabled={!medicalRecordId}
+          disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Weight Record
@@ -252,12 +261,12 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {weightRecords.map((record, index) => (
-                  <tr key={record.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {weightRecords.map((record) => (
+                  <tr key={record.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {format(new Date(record.date), 'MMM dd, yyyy')}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {record.weight} {record.unit}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
@@ -287,25 +296,22 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
             <h3 className="text-lg font-medium mb-4">Add New Weight Record</h3>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Weight</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Weight</label>
+                <div className="mt-1 flex rounded-md shadow-sm">
                   <input
                     type="number"
                     step="0.01"
                     min="0"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="flex-1 min-w-0 block w-full rounded-none rounded-l-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Unit</label>
                   <select
                     value={unit}
                     onChange={(e) => setUnit(e.target.value as 'kg' | 'lb')}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
                   >
                     <option value="kg">kg</option>
                     <option value="lb">lb</option>
@@ -328,7 +334,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ medicalR
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  rows={2}
+                  rows={3}
                 />
               </div>
               <div className="flex justify-end space-x-3 mt-6">

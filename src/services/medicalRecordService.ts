@@ -8,48 +8,88 @@ import {
   WeightRecord 
 } from '../components/MedicalRecord/types';
 
-// Medical Record API calls
-export const createMedicalRecord = async (petId: string) => {
-  const response = await axiosInstance.post('/api/medical-records', { petId });
-  return response.data;
+// Get all medical records for a pet
+export const getAllMedicalRecords = async (petId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getAllMedicalRecords:', error);
+    throw error;
+  }
 };
 
-export const getMedicalRecord = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}`);
-  return response.data;
+// Treatment API calls
+export const getTreatments = async (petId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/treatments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getTreatments:', error);
+    throw error;
+  }
 };
 
-export const getMedicalRecordByPetId = async (petId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/pet/${petId}`);
-  return response.data;
+export const getTreatment = async (petId: string, treatmentId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/treatments/${treatmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getTreatment:', error);
+    throw error;
+  }
 };
 
-export const deleteMedicalRecord = async (medicalRecordId: string) => {
-  const response = await axiosInstance.delete(`/api/medical-records/${medicalRecordId}`);
-  return response.data;
+export const addTreatment = async (petId: string, treatment: {
+  treatmentType: string,
+  description: string,
+  treatmentDate: string,
+  veterinarian: string
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/pets/${petId}/medical-records/treatments`,
+      treatment
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in addTreatment:', error);
+    throw error;
+  }
+};
+
+export const updateTreatment = async (petId: string, treatmentId: string, treatment: {
+  treatmentType: string,
+  description: string,
+  treatmentDate: string,
+  veterinarian: string
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/pets/${petId}/medical-records/treatments/${treatmentId}`,
+      treatment
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in updateTreatment:', error);
+    throw error;
+  }
+};
+
+export const deleteTreatment = async (petId: string, treatmentId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/api/pets/${petId}/medical-records/treatments/${treatmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteTreatment:', error);
+    throw error;
+  }
 };
 
 // Vaccination API calls
-export const getVaccinations = async (medicalRecordId: string) => {
-  if (!medicalRecordId) {
-    console.error('getVaccinations called without medicalRecordId');
-    throw new Error('Medical record ID is required');
-  }
-  
+export const getVaccinations = async (petId: string) => {
   try {
-    console.log(`Fetching vaccinations for medical record ID: ${medicalRecordId}`);
-    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/vaccinations`);
-    
-    if (!response.data) {
-      console.warn('No data received from vaccinations API');
-      return [];
-    }
-    
-    if (!Array.isArray(response.data)) {
-      console.warn('Unexpected data format received from vaccinations API:', response.data);
-      return [];
-    }
-    
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/vaccinations`);
     return response.data;
   } catch (error) {
     console.error('Error in getVaccinations:', error);
@@ -57,34 +97,26 @@ export const getVaccinations = async (medicalRecordId: string) => {
   }
 };
 
-export const addVaccination = async (medicalRecordId: string, vaccination: { 
+export const getVaccination = async (petId: string, vaccinationId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/vaccinations/${vaccinationId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getVaccination:', error);
+    throw error;
+  }
+};
+
+export const addVaccination = async (petId: string, vaccination: { 
   vaccineName: string, 
   vaccinationDate: string, 
   veterinarian: string 
 }) => {
-  if (!medicalRecordId) {
-    console.error('addVaccination called without medicalRecordId');
-    throw new Error('Medical record ID is required');
-  }
-  
-  if (!vaccination.vaccineName || !vaccination.vaccinationDate || !vaccination.veterinarian) {
-    console.error('addVaccination called with incomplete vaccination data:', vaccination);
-    throw new Error('Vaccination data is incomplete');
-  }
-  
   try {
-    console.log(`Adding vaccination for medical record ID: ${medicalRecordId}`, vaccination);
     const response = await axiosInstance.post(
-      `/api/medical-records/${medicalRecordId}/vaccinations`, 
+      `/api/pets/${petId}/medical-records/vaccinations`, 
       vaccination
     );
-    
-    if (!response.data) {
-      console.warn('No data received from add vaccination API');
-      throw new Error('Failed to add vaccination');
-    }
-    
-    console.log('Vaccination added successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error in addVaccination:', error);
@@ -92,92 +124,37 @@ export const addVaccination = async (medicalRecordId: string, vaccination: {
   }
 };
 
-// Treatment API calls
-export const getTreatments = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/treatments`);
-  return response.data;
-};
-
-export const addTreatment = async (medicalRecordId: string, treatment: {
-  treatmentType: string,
-  description: string,
-  treatmentDate: string
+export const updateVaccination = async (petId: string, vaccinationId: string, vaccination: { 
+  vaccineName: string, 
+  vaccinationDate: string, 
+  veterinarian: string 
 }) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/treatments`,
-    treatment
-  );
-  return response.data;
+  try {
+    const response = await axiosInstance.put(
+      `/api/pets/${petId}/medical-records/vaccinations/${vaccinationId}`, 
+      vaccination
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in updateVaccination:', error);
+    throw error;
+  }
 };
 
-// Appointment API calls
-export const getAppointments = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/appointments`);
-  return response.data;
-};
-
-export const getUpcomingAppointments = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/appointments/upcoming`);
-  return response.data;
-};
-
-export const addAppointment = async (medicalRecordId: string, appointment: {
-  appointmentDate: string,
-  veterinarian: string,
-  reason: string
-}) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/appointments`,
-    appointment
-  );
-  return response.data;
-};
-
-// Medication API calls
-export const getMedications = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/medications`);
-  return response.data;
-};
-
-export const getCurrentMedications = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/medications/current`);
-  return response.data;
-};
-
-export const addMedication = async (medicalRecordId: string, medication: {
-  medicationName: string,
-  dosage: string,
-  startDate: string,
-  endDate: string
-}) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/medications`,
-    medication
-  );
-  return response.data;
+export const deleteVaccination = async (petId: string, vaccinationId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/api/pets/${petId}/medical-records/vaccinations/${vaccinationId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteVaccination:', error);
+    throw error;
+  }
 };
 
 // Allergy API calls
-export const getAllergies = async (medicalRecordId: string) => {
-  if (!medicalRecordId) {
-    console.error('getAllergies called without medicalRecordId');
-    throw new Error('Medical record ID is required');
-  }
-  
+export const getAllergies = async (petId: string) => {
   try {
-    console.log(`Fetching allergies for medical record ID: ${medicalRecordId}`);
-    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/allergies`);
-    
-    if (!response.data) {
-      console.warn('No data received from allergies API');
-      return [];
-    }
-    
-    if (!Array.isArray(response.data)) {
-      console.warn('Unexpected data format received from allergies API:', response.data);
-      return [];
-    }
-    
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/allergies`);
     return response.data;
   } catch (error) {
     console.error('Error in getAllergies:', error);
@@ -185,40 +162,131 @@ export const getAllergies = async (medicalRecordId: string) => {
   }
 };
 
-export const addAllergy = async (medicalRecordId: string, allergy: {
+export const getAllergy = async (petId: string, allergyId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/allergies/${allergyId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getAllergy:', error);
+    throw error;
+  }
+};
+
+export const addAllergy = async (petId: string, allergy: {
   allergen: string,
   reaction: string,
   severity: string,
   notes?: string
 }) => {
-  const response = await axiosInstance.post(
-    `/api/medical-records/${medicalRecordId}/allergies`,
-    allergy
-  );
-  return response.data;
+  try {
+    const response = await axiosInstance.post(
+      `/api/pets/${petId}/medical-records/allergies`,
+      allergy
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in addAllergy:', error);
+    throw error;
+  }
+};
+
+export const updateAllergy = async (petId: string, allergyId: string, allergy: {
+  allergen: string,
+  reaction: string,
+  severity: string,
+  notes?: string
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/pets/${petId}/medical-records/allergies/${allergyId}`,
+      allergy
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in updateAllergy:', error);
+    throw error;
+  }
+};
+
+export const deleteAllergy = async (petId: string, allergyId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/api/pets/${petId}/medical-records/allergies/${allergyId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteAllergy:', error);
+    throw error;
+  }
+};
+
+// Appointment API calls
+export const getAppointments = async (petId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/appointments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getAppointments:', error);
+    throw error;
+  }
+};
+
+export const getAppointment = async (petId: string, appointmentId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/appointments/${appointmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getAppointment:', error);
+    throw error;
+  }
+};
+
+export const addAppointment = async (petId: string, appointment: {
+  appointmentDate: string,
+  veterinarian: string,
+  reason: string
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/pets/${petId}/medical-records/appointments`,
+      appointment
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in addAppointment:', error);
+    throw error;
+  }
+};
+
+export const updateAppointment = async (petId: string, appointmentId: string, appointment: {
+  appointmentDate: string,
+  veterinarian: string,
+  reason: string
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/pets/${petId}/medical-records/appointments/${appointmentId}`,
+      appointment
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in updateAppointment:', error);
+    throw error;
+  }
+};
+
+export const deleteAppointment = async (petId: string, appointmentId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/api/pets/${petId}/medical-records/appointments/${appointmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteAppointment:', error);
+    throw error;
+  }
 };
 
 // Weight Record API calls
-export const getWeightRecords = async (medicalRecordId: string) => {
-  if (!medicalRecordId) {
-    console.error('getWeightRecords called without medicalRecordId');
-    throw new Error('Medical record ID is required');
-  }
-  
+export const getWeightRecords = async (petId: string) => {
   try {
-    console.log(`Fetching weight records for medical record ID: ${medicalRecordId}`);
-    const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/weight-records`);
-    
-    if (!response.data) {
-      console.warn('No data received from weight records API');
-      return [];
-    }
-    
-    if (!Array.isArray(response.data)) {
-      console.warn('Unexpected data format received from weight records API:', response.data);
-      return [];
-    }
-    
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/weight-records`);
     return response.data;
   } catch (error) {
     console.error('Error in getWeightRecords:', error);
@@ -226,43 +294,106 @@ export const getWeightRecords = async (medicalRecordId: string) => {
   }
 };
 
-export const getLatestWeightRecord = async (medicalRecordId: string) => {
-  const response = await axiosInstance.get(`/api/medical-records/${medicalRecordId}/weight-records/latest`);
-  return response.data;
+export const getWeightRecord = async (petId: string, weightRecordId: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/weight-records/${weightRecordId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getWeightRecord:', error);
+    throw error;
+  }
 };
 
-export const addWeightRecord = async (medicalRecordId: string, weightRecord: {
+export const addWeightRecord = async (petId: string, weightRecord: {
+  recordDate: string,
   weight: number,
   unit: string,
-  recordDate: string,
   notes?: string
 }) => {
-  if (!medicalRecordId) {
-    console.error('addWeightRecord called without medicalRecordId');
-    throw new Error('Medical record ID is required');
-  }
-  
-  if (!weightRecord.weight || !weightRecord.recordDate) {
-    console.error('addWeightRecord called with incomplete weight record data:', weightRecord);
-    throw new Error('Weight record data is incomplete');
-  }
-  
   try {
-    console.log(`Adding weight record for medical record ID: ${medicalRecordId}`, weightRecord);
     const response = await axiosInstance.post(
-      `/api/medical-records/${medicalRecordId}/weight-records`,
+      `/api/pets/${petId}/medical-records/weight-records`,
       weightRecord
     );
-    
-    if (!response.data) {
-      console.warn('No data received from add weight record API');
-      throw new Error('Failed to add weight record');
-    }
-    
-    console.log('Weight record added successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error in addWeightRecord:', error);
+    throw error;
+  }
+};
+
+export const updateWeightRecord = async (petId: string, weightRecordId: string, weightRecord: {
+  recordDate: string,
+  weight: number,
+  unit: string,
+  notes?: string
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `/api/pets/${petId}/medical-records/weight-records/${weightRecordId}`,
+      weightRecord
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in updateWeightRecord:', error);
+    throw error;
+  }
+};
+
+export const deleteWeightRecord = async (petId: string, weightRecordId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/api/pets/${petId}/medical-records/weight-records/${weightRecordId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteWeightRecord:', error);
+    throw error;
+  }
+};
+
+// For backward compatibility - these will be deprecated
+export const getUpcomingAppointments = async (petId: string) => {
+  console.warn('getUpcomingAppointments is deprecated, use getAppointments instead');
+  return getAppointments(petId);
+};
+
+export const getLatestWeightRecord = async (petId: string) => {
+  console.warn('getLatestWeightRecord is deprecated, use getWeightRecords instead');
+  const records = await getWeightRecords(petId);
+  return records.length > 0 ? records[0] : null;
+};
+
+// Medication API calls - keeping for backward compatibility
+export const getMedications = async (petId: string) => {
+  console.warn('getMedications is deprecated and may not work with the new API');
+  try {
+    const response = await axiosInstance.get(`/api/pets/${petId}/medical-records/medications`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getMedications:', error);
+    return [];
+  }
+};
+
+export const getCurrentMedications = async (petId: string) => {
+  console.warn('getCurrentMedications is deprecated and may not work with the new API');
+  return getMedications(petId);
+};
+
+export const addMedication = async (petId: string, medication: {
+  medicationName: string,
+  dosage: string,
+  startDate: string,
+  endDate: string
+}) => {
+  console.warn('addMedication is deprecated and may not work with the new API');
+  try {
+    const response = await axiosInstance.post(
+      `/api/pets/${petId}/medical-records/medications`,
+      medication
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error in addMedication:', error);
     throw error;
   }
 }; 

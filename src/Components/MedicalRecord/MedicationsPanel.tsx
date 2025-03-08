@@ -6,10 +6,10 @@ import { Medication } from './types';
 import { getMedications, addMedication } from '../../services/medicalRecordService';
 
 interface MedicationsPanelProps {
-  medicalRecordId: string | null;
+  petId: string | null;
 }
 
-export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecordId }) => {
+export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => {
   const [medications, setMedications] = useState<Medication[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,14 +27,15 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecor
 
   useEffect(() => {
     const fetchMedications = async () => {
-      if (!medicalRecordId) {
+      if (!petId) {
         setIsLoading(false);
         return;
       }
       
       try {
         setIsLoading(true);
-        const data = await getMedications(medicalRecordId);
+        const data = await getMedications(petId);
+        console.log('Medications data received:', data);
         
         // Transform API data to match our component's Medication type
         const transformedMedications: Medication[] = data.map((item: any) => ({
@@ -58,14 +59,14 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecor
     };
 
     fetchMedications();
-  }, [medicalRecordId]);
+  }, [petId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!medicalRecordId) {
-      // This should not happen as the parent component ensures medicalRecordId is available
-      console.error('Attempted to add medication without a medical record ID');
+    if (!petId) {
+      // This should not happen as the parent component ensures petId is available
+      console.error('Attempted to add medication without a pet ID');
       setError('System error: Unable to add medication. Please try again later.');
       return;
     }
@@ -77,8 +78,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecor
     
     try {
       setIsSubmitting(true);
-      
-      const newMedication = await addMedication(medicalRecordId, {
+      console.log('Submitting medication with data:', {
         medicationName,
         dosage,
         frequency,
@@ -87,6 +87,18 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecor
         prescribedBy,
         notes
       });
+      
+      const newMedication = await addMedication(petId, {
+        medicationName,
+        dosage,
+        frequency,
+        startDate,
+        endDate: endDate || null,
+        prescribedBy,
+        notes
+      });
+      
+      console.log('New medication created:', newMedication);
       
       // Transform the API response to match our component's Medication type
       const transformedMedication: Medication = {
@@ -140,7 +152,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ medicalRecor
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          disabled={!medicalRecordId}
+          disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Medication
