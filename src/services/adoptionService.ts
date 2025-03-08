@@ -111,6 +111,41 @@ const adoptionService = {
     }
   },
 
+  // Update an existing adoption listing
+  updateAdoptionListing: async (id: string, data: AdoptionData) => {
+    try {
+      const response = await axiosInstance.put(`/api/v1/adoption/${id}`, data);
+      console.log('Update listing response:', response.data);
+
+      if (!response.data) {
+        throw new Error('İlan güncellenemedi');
+      }
+
+      const listing = response.data;
+      return {
+        ...listing,
+        imageUrl: listing.imageUrl ? 
+          (listing.imageUrl.startsWith('http') ? listing.imageUrl : `${API_BASE_URL}${listing.imageUrl}`)
+          : null
+      };
+    } catch (error: any) {
+      console.error('Error updating listing:', error);
+      throw new Error(error.response?.data?.message || 'İlan güncellenirken bir hata oluştu');
+    }
+  },
+
+  // Delete an adoption listing
+  deleteAdoptionListing: async (id: string) => {
+    try {
+      const response = await axiosInstance.delete(`/api/v1/adoption/${id}`);
+      console.log('Delete listing response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Error deleting listing:', error);
+      throw new Error(error.response?.data?.message || 'İlan silinirken bir hata oluştu');
+    }
+  },
+
   // Upload photo for an adoption listing
   uploadPhoto: async (id: string, photo: File) => {
     try {

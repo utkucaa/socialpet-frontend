@@ -64,6 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Link to="/" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Ana Sayfa</Link>
             <Link to="/adopt" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Sahiplen</Link>
+            <Link to="/vet-pet-shop" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Veteriner & Petshop</Link>
             <Link to="/lost" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Kayıp</Link>
             <Link to="/health-tracking" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Sağlık Takibi</Link>
             <Link to="/breed-detector" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Cins Dedektifi</Link>
@@ -79,14 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
               </>
             ) : (
               <>
-                <Link to="/pets" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Hayvanlarım</Link>
                 <Link to="/profile" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Profil</Link>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-                >
-                  Çıkış Yap
-                </button>
               </>
             )}
           </div>
@@ -98,6 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <Link to="/" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Ana Sayfa</Link>
           <Link to="/adopt" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Sahiplen</Link>
+          <Link to="/vet-pet-shop" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Veteriner & Petshop</Link>
           <Link to="/lost" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Kayıp</Link>
           <Link to="/health-tracking" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Sağlık Takibi</Link>
           <Link to="/breed-detector" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Cins Dedektifi</Link>
@@ -113,7 +108,6 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
             </>
           ) : (
             <>
-              <Link to="/pets" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Hayvanlarım</Link>
               <Link to="/profile" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">Profil</Link>
               <button
                 onClick={handleLogout}

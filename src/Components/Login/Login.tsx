@@ -46,7 +46,7 @@ const Login: React.FC = () => {
         password
       });
 
-      const { accessToken, userId, email: userEmail, joinDate, username, firstName, lastName, avatarUrl } = response.data;
+      const { accessToken, userId, email: userEmail, joinDate, username, firstName, lastName, avatarUrl, role } = response.data;
       
       // JWT token'ı localStorage'a kaydet
       localStorage.setItem('token', accessToken);
@@ -59,6 +59,7 @@ const Login: React.FC = () => {
         username,
         firstName,
         lastName,
+        role,
         avatar: avatarUrl
       };
       

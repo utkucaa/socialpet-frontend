@@ -54,6 +54,17 @@ const lostPetService = {
     }
   },
 
+  // Kayıp ilanını güncelle
+  updateLostPet: async (id: string, lostPet: LostPet) => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/lostpets/${id}`, lostPet);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating lost pet listing:', error);
+      throw error;
+    }
+  },
+
   // Kayıp ilanını sil
   deleteLostPet: async (id: string, userId: string) => {
     try {
