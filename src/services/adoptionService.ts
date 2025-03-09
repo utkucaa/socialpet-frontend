@@ -23,7 +23,7 @@ export interface AdoptionListingDetail {
 }
 
 const adoptionService = {
-  // Get all adoption listings
+  
   getAdoptionListings: async () => {
     try {
       console.log('API isteği başlatılıyor:', `${API_BASE_URL}/api/v1/adoption/recent`);
@@ -34,7 +34,7 @@ const adoptionService = {
         throw new Error('Sunucudan veri alınamadı');
       }
 
-      // Add base URL to image URLs if they don't start with http
+     
       const processedData = response.data.map((listing: AdoptionListingDetail) => ({
         ...listing,
         imageUrl: listing.imageUrl ? 
@@ -111,7 +111,7 @@ const adoptionService = {
     }
   },
 
-  // Update an existing adoption listing
+
   updateAdoptionListing: async (id: string, data: AdoptionData) => {
     try {
       const response = await axiosInstance.put(`/api/v1/adoption/${id}`, data);
