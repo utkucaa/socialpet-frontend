@@ -5,6 +5,7 @@ import TopBar from './components/TopBar';
 import Dashboard from './pages/Dashboard';
 import AdList from './pages/ads/AdList';
 import AdNew from './pages/ads/AdNew';
+import AdPending from './pages/ads/AdPending';
 import QnaList from './pages/qna/QnaList';
 import QnaNew from './pages/qna/QnaNew';
 import UserList from './pages/users/UserList';
@@ -26,6 +27,7 @@ const AdminLayout = () => {
                 <Route index element={<Navigate to="/admin/ads/list" replace />} />
                 <Route path="list" element={<AdList />} />
                 <Route path="new" element={<AdNew />} />
+                <Route path="pending" element={<AdPending />} />
               </Route>
 
               {/* Soru-Cevap */}
