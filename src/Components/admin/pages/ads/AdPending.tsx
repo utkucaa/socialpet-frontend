@@ -187,7 +187,6 @@ const AdPending = () => {
     }
 
     try {
-      // Create an array of promises for all approval requests
       const approvalPromises = filteredAds.map(ad => handleApprove(ad.id, ad.type));
 
       await Promise.all(approvalPromises);
@@ -200,7 +199,6 @@ const AdPending = () => {
     }
   };
 
-  // Filter ads based on search term and filters
   const filteredAds = pendingAds.filter(ad => {
     const matchesSearch = searchTerm === '' || 
       ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
