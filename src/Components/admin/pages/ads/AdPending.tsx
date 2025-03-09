@@ -190,10 +190,8 @@ const AdPending = () => {
       // Create an array of promises for all approval requests
       const approvalPromises = filteredAds.map(ad => handleApprove(ad.id, ad.type));
 
-      // Execute all approval requests in parallel
       await Promise.all(approvalPromises);
       
-      // Refresh the list and counts after approving all
       fetchPendingAds();
       fetchPendingCounts();
     } catch (err: any) {
