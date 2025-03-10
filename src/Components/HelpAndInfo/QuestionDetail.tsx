@@ -27,11 +27,14 @@ const QuestionDetail: React.FC = () => {
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [newAnswer, setNewAnswer] = useState<string>('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const fetchQuestion = async (): Promise<void> => {
       try {
+        setLoading(true);
         const response = await fetch(`http://localhost:8080/api/questions/${id}`);
         if (!response.ok) {
           throw new Error('Soru yüklenirken bir hata oluştu');
@@ -48,9 +51,66 @@ const QuestionDetail: React.FC = () => {
     fetchQuestion();
   }, [id]);
 
-  if (loading) return <div>Yükleniyor...</div>;
-  if (error) return <div>Hata: {error}</div>;
-  if (!question) return <div>Soru bulunamadı</div>;
+  const handleSubmitAnswer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newAnswer.trim()) {
+      alert('Lütfen bir cevap yazın');
+      return;
+    }
+    
+    try {
+      setSubmitting(true);
+      
+      // Burada gerçek API çağrısı yapılacak
+      // Şimdilik mock bir cevap ekliyoruz
+      const mockUser = {
+        firstName: 'Kullanıcı',
+        lastName: 'Adı'
+      };
+      
+      const mockAnswer = {
+        id: Date.now(),
+        content: newAnswer,
+        datePosted: new Date().toISOString(),
+        user: mockUser
+      };
+      
+      // Soruya cevabı ekle
+      if (question) {
+        const updatedQuestion = {
+          ...question,
+          answers: [...(question.answers || []), mockAnswer]
+        };
+        
+        setQuestion(updatedQuestion);
+        setNewAnswer('');
+      }
+      
+      setSubmitting(false);
+    } catch (err) {
+      console.error('Cevap gönderilirken hata oluştu:', err);
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return (
+    <div className="loading-container">
+      <div className="loading">Yükleniyor...</div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="error-container">
+      <div className="error">Hata: {error}</div>
+    </div>
+  );
+  
+  if (!question) return (
+    <div className="not-found-container">
+      <div className="not-found">Soru bulunamadı</div>
+    </div>
+  );
 
   return (
     <div className="question-detail">
@@ -59,7 +119,6 @@ const QuestionDetail: React.FC = () => {
         <div className="question-stats">
           <span><i className="fas fa-eye"></i> 82 Görüntülenme</span>
           <span><i className="fas fa-comment"></i> {question.answers?.length || 0} Cevap</span>
-          <span><i className="fas fa-paw"></i> 0 Pati</span>
         </div>
       </div>
 
@@ -70,18 +129,21 @@ const QuestionDetail: React.FC = () => {
               <img src="/paw-placeholder.png" alt="User" />
             </div>
             <div className="username">{question.user.firstName} {question.user.lastName}</div>
-            <div className="user-points">963 Puan</div>
           </div>
 
           <div className="question-content">
             <p className="question-text">{question.content}</p>
             <div className="question-actions">
-              <button className="patile-btn">Patile</button>
-              <span className="pati-count">0</span>
               <button className="complaint-btn">Şikayet Et</button>
             </div>
             <div className="post-date">
-              {new Date(question.datePosted).toLocaleString('tr-TR')}
+              {new Date(question.datePosted).toLocaleDateString('tr-TR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </div>
           </div>
         </div>
@@ -92,27 +154,55 @@ const QuestionDetail: React.FC = () => {
               <span>{question.answers?.length || 0}</span>
               <span>CEVAP</span>
             </h3>
-            <select className="sort-answers">
-              <option>En Çok Patilenene Göre</option>
-            </select>
           </div>
           
-          {question.answers?.map((answer) => (
-            <div key={answer.id} className="answer-box">
-              <div className="user-info">
-                <div className="profile-image">
-                  <img src="/paw-placeholder.png" alt={answer.user.firstName} />
+          {question.answers && question.answers.length > 0 ? (
+            question.answers.map((answer) => (
+              <div key={answer.id} className="answer-box">
+                <div className="user-info">
+                  <div className="profile-image">
+                    <img src="/paw-placeholder.png" alt={answer.user.firstName} />
+                  </div>
+                  <div className="username">{answer.user.firstName} {answer.user.lastName}</div>
                 </div>
-                <div className="username">{answer.user.firstName} {answer.user.lastName}</div>
-              </div>
-              <div className="answer-content">
-                <p>{answer.content}</p>
-                <div className="post-date">
-                  {new Date(answer.datePosted).toLocaleString('tr-TR')}
+                <div className="answer-content">
+                  <p>{answer.content}</p>
+                  <div className="post-date">
+                    {new Date(answer.datePosted).toLocaleDateString('tr-TR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="no-answers">
+              <p>Bu soruya henüz cevap verilmemiş. İlk cevabı siz verin!</p>
             </div>
-          ))}
+          )}
+          
+          <div className="add-answer-section">
+            <h3>Cevabınızı Yazın</h3>
+            <form className="answer-form" onSubmit={handleSubmitAnswer}>
+              <textarea
+                placeholder="Cevabınızı buraya yazın..."
+                value={newAnswer}
+                onChange={(e) => setNewAnswer(e.target.value)}
+                required
+              />
+              <button 
+                type="submit" 
+                className="submit-answer-btn"
+                disabled={submitting}
+              >
+                {submitting ? 'Gönderiliyor...' : 'Cevabı Gönder'}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 

@@ -16,6 +16,7 @@ interface FormData {
   lastSeenLocation: string;
   imageUrl: string;
   animalType: string;
+  image: string;
 }
 
 const CreateListingPage: React.FC = () => {
@@ -34,7 +35,8 @@ const CreateListingPage: React.FC = () => {
     lastSeenDate: '',
     lastSeenLocation: '',
     imageUrl: '',
-    animalType: ''
+    animalType: '',
+    image: ''
   });
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -56,13 +58,14 @@ const CreateListingPage: React.FC = () => {
   const uploadImage = async (file: File): Promise<void> => {
     try {
       setIsUploading(true);
+      console.log("Starting image upload for file:", file.name, file.type, file.size);
       
       // FormData oluştur
       const formData = new FormData();
       formData.append('file', file);
       
       // Dosyayı sunucuya yükle
-      // Backend'deki FileController'ın /upload endpoint'ini kullanıyoruz
+      console.log("Sending request to /api/v1/files/upload");
       const response = await axiosInstance.post('/api/v1/files/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -73,18 +76,26 @@ const CreateListingPage: React.FC = () => {
       
       // Sunucudan dönen fileUrl'i kullan
       if (response.data && response.data.fileUrl) {
+        console.log("Using fileUrl from response:", response.data.fileUrl);
+        
+        // API'den dönen fileUrl'i doğrudan kullan
         setFormData(prev => ({
           ...prev,
-          imageUrl: response.data.fileUrl
+          imageUrl: response.data.fileUrl,
+          image: response.data.fileUrl
         }));
       } else if (response.data && response.data.fileName) {
         // Eğer fileUrl yoksa fileName ile URL oluştur
-        const fileUrl = `/api/v1/files/${response.data.fileName}`;
+        // AdDetail'deki gibi tam URL oluştur
+        const fileUrl = `http://localhost:8080/api/v1/files/${response.data.fileName}`;
+        console.log("Using fileName to create URL:", fileUrl);
         setFormData(prev => ({
           ...prev,
-          imageUrl: fileUrl
+          imageUrl: fileUrl,
+          image: fileUrl
         }));
       } else {
+        console.error("No fileUrl or fileName in response:", response.data);
         throw new Error('File URL or name not received from server');
       }
     } catch (error) {
@@ -121,13 +132,28 @@ const CreateListingPage: React.FC = () => {
       
       const userId = userData.id;
       
-      await lostPetService.createLostPet(userId, {
+      // Form verilerini logla
+      console.log("Submitting form data:", formData);
+      
+      // Resim URL'lerini kontrol et
+      if (!formData.imageUrl && !formData.image) {
+        console.warn("No image URL provided");
+      }
+      
+      // API'ye gönderilecek veriyi hazırla
+      const lostPetData = {
         ...formData,
         timestamp: Date.now(),
         viewCount: 0,
-        image: formData.imageUrl || "",  // Sunucudan dönen URL'i kullan
-        animalType: formData.animalType || "Unknown"
-      });
+        // Hem image hem de imageUrl alanlarını gönder
+        image: formData.image || formData.imageUrl || "",
+        imageUrl: formData.imageUrl || formData.image || "",
+        animalType: formData.animalType || formData.category || "Unknown"
+      };
+      
+      console.log("Sending data to API:", lostPetData);
+      
+      await lostPetService.createLostPet(userId, lostPetData);
 
       alert("İlan başarıyla oluşturuldu");
       navigate('/lost');

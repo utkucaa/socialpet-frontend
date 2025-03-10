@@ -6,6 +6,8 @@ import lostPetService from '../../services/lostPetService';
 import GoogleMap from '../Adoption/GoogleMap';
 import axiosInstance from '../../services/axios';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 const LostPetDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -40,53 +42,20 @@ const LostPetDetail: React.FC = () => {
         // API'den gelen veriyi işliyoruz
         const data = response.data;
         
-        // Resim URL'ini düzenliyoruz
-        if (data.image) {
-          // Base64 kontrolü
-          if (data.image.startsWith('data:image')) {
-            console.log('Base64 image detected, this should be handled on the server side');
-            // Base64 resimler sunucu tarafında işlenmeli, burada sadece log
-          } 
-          // Tam URL kontrolü (http veya https ile başlayan)
-          else if (data.image.startsWith('http')) {
-            // URL zaten tam, değişiklik yapmaya gerek yok
-            console.log('Full URL detected:', data.image);
-          }
-          // FileController URL formatı kontrolü
-          else if (data.image.includes('/api/v1/files/')) {
-            // URL zaten doğru formatta, değişiklik yapmaya gerek yok
-            console.log('File controller URL detected:', data.image);
-          }
-          // Göreceli URL kontrolü
-          else {
-            // Dosya adı olabilir, FileController URL'ine dönüştür
-            data.image = `/api/v1/files/${data.image}`;
-          }
-        }
-        
+        // Resim URL'ini düzenliyoruz - AdDetail'deki gibi
         if (data.imageUrl) {
-          // Base64 kontrolü
-          if (data.imageUrl.startsWith('data:image')) {
-            console.log('Base64 imageUrl detected, this should be handled on the server side');
-            // Base64 resimler sunucu tarafında işlenmeli, burada sadece log
-          } 
-          // Tam URL kontrolü (http veya https ile başlayan)
-          else if (data.imageUrl.startsWith('http')) {
-            // URL zaten tam, değişiklik yapmaya gerek yok
-            console.log('Full URL detected:', data.imageUrl);
-          }
-          // FileController URL formatı kontrolü
-          else if (data.imageUrl.includes('/api/v1/files/')) {
-            // URL zaten doğru formatta, değişiklik yapmaya gerek yok
-            console.log('File controller URL detected:', data.imageUrl);
-          }
-          // Göreceli URL kontrolü
-          else {
-            // Dosya adı olabilir, FileController URL'ine dönüştür
-            data.imageUrl = `/api/v1/files/${data.imageUrl}`;
-          }
+          data.imageUrl = data.imageUrl.startsWith('http') 
+            ? data.imageUrl 
+            : `${API_BASE_URL}${data.imageUrl}`;
         }
         
+        if (data.image) {
+          data.image = data.image.startsWith('http') 
+            ? data.image 
+            : `${API_BASE_URL}${data.image}`;
+        }
+        
+        console.log("Processed lost pet data:", data);
         setLostPet(data);
       } catch (err: any) {
         console.error('Error fetching lost pet:', err);
@@ -142,22 +111,25 @@ const LostPetDetail: React.FC = () => {
     );
   }
 
-  // Prepare images array
+  // AdDetail'deki gibi images array'i oluştur
   const images: string[] = [];
   
-  // Resim URL'lerini kontrol et ve base64 olmayanları ekle
-  if (lostPet?.image && !lostPet.image.startsWith('data:image')) {
-    images.push(lostPet.image);
-  }
-  
-  if (lostPet?.imageUrl && !lostPet.imageUrl.startsWith('data:image') && 
-      lostPet.imageUrl !== lostPet.image) {
+  // Önce imageUrl'i kontrol et
+  if (lostPet.imageUrl) {
     images.push(lostPet.imageUrl);
   }
   
-  if (images.length === 0) {
-    images.push('/placeholder-pet.jpg'); // Fallback image
+  // Sonra image'i kontrol et (eğer imageUrl'den farklıysa)
+  if (lostPet.image && lostPet.image !== lostPet.imageUrl) {
+    images.push(lostPet.image);
   }
+  
+  // Eğer hiç resim yoksa placeholder kullan
+  if (images.length === 0) {
+    images.push('/placeholder-pet.jpg');
+  }
+  
+  console.log("Images array:", images);
 
   // Extract city and district from location if available
   let city = 'Belirtilmemiş';
@@ -248,6 +220,13 @@ const LostPetDetail: React.FC = () => {
                 src={images[currentImageIndex]} 
                 alt={lostPet.title} 
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  console.error("Image load error:", e);
+                  console.log("Failed to load image:", images[currentImageIndex]);
+                  
+                  // Hata durumunda placeholder göster
+                  (e.target as HTMLImageElement).src = '/placeholder-pet.jpg';
+                }}
               />
             ) : (
               <div className="flex items-center justify-center h-full bg-gray-200 text-gray-500">
@@ -286,7 +265,14 @@ const LostPetDetail: React.FC = () => {
                     currentImageIndex === index ? 'border-purple-500' : 'border-transparent'
                   }`}
                 >
-                  <img src={img} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+                  <img 
+                    src={img} 
+                    alt={`Thumbnail ${index + 1}`} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder-pet.jpg';
+                    }}
+                  />
                 </button>
               ))}
             </div>

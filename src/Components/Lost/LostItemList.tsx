@@ -20,12 +20,14 @@ interface ApiListing {
   id?: number;
   title?: string;
   image?: string;
+  imageUrl?: string;
   location?: string;
   timestamp?: number;
   animalType?: string;
   details?: string;
   status?: string;
   additionalInfo?: string;
+  category?: string;
 }
 
 const LostItemList: React.FC = () => {
@@ -60,11 +62,11 @@ const LostItemList: React.FC = () => {
         const formattedApiListings: LostAnimal[] = apiListings.map((listing: ApiListing) => ({
           id: listing.id || Date.now(),
           title: listing.title || 'İsimsiz İlan',
-          image: listing.image || '/default-image.jpg',
+          image: listing.imageUrl || listing.image || '/default-image.jpg',
           location: listing.location || 'Konum belirtilmedi',
           timestamp: listing.timestamp || Date.now(),
           timeAgo: getTimeAgo(listing.timestamp || Date.now()),
-          animalType: listing.animalType || 'Belirtilmedi',
+          animalType: listing.category || listing.animalType || 'Belirtilmedi',
           details: listing.details || '',
           status: listing.status || 'kayip',
           additionalInfo: listing.additionalInfo || 'bos'
@@ -108,7 +110,6 @@ const LostItemList: React.FC = () => {
     <div className="lost-item-list">
       <div className="category" id="all-animals">
         <h2>Son Kayıp Hayvanlar</h2>
-        <button className="view-all-btn">Bütün İlanları Görüntüle</button>
         <div className="item-cards">
           {lostAnimals.map((item) => (
             <LostItemCard key={item.id} {...item} />

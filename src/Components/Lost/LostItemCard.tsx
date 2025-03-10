@@ -21,12 +21,14 @@ const LostItemCard: React.FC<LostItemCardProps> = ({
 }) => {
   return (
     <div className="lost-item-card">
-      <img src={image} alt={title} className="item-image" />
+      <div className="listing-image">
+        <img src={image} alt={title} className="item-image" />
+      </div>
       <div className="item-info">
         <h3>{title}</h3>
-        <p>{animalType}</p>
-        <p>{location}</p>
-        <p>{timeAgo} ilan verildi</p>
+        <p className="pet-type">{animalType}</p>
+        <p className="location">{location}</p>
+        <p className="time-ago">{timeAgo} ilan verildi</p>
         <Link to={`/lost/${id}`} className="cta-button">
           İlanı Görüntüle
         </Link>

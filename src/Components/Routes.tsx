@@ -53,7 +53,7 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/adopt" element={<AdoptionPage />} />
-            <Route path="/lost" element={<LostPage />} />
+            <Route path="/lost/*" element={<LostPage />} />
             <Route path="/pets" element={<PetList />} />
             <Route path="/lost/create" element={<CreateListingPage />} />
             <Route path="/health-tracking" element={<MedicalRecord />} />

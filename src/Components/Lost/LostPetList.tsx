@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import lostPetService from '../../services/lostPetService';
 import axiosInstance from '../../services/axios';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 const LostPetList: React.FC = () => {
   const [lostPets, setLostPets] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,52 +29,17 @@ const LostPetList: React.FC = () => {
         const processedData = response.data.map((pet: any) => {
           const processedPet = { ...pet };
           
-          // Resim URL'ini düzenliyoruz
-          if (processedPet.image) {
-            // Base64 kontrolü
-            if (processedPet.image.startsWith('data:image')) {
-              console.log('Base64 image detected, this should be handled on the server side');
-              // Base64 resimler sunucu tarafında işlenmeli, burada sadece log
-            } 
-            // Tam URL kontrolü (http veya https ile başlayan)
-            else if (processedPet.image.startsWith('http')) {
-              // URL zaten tam, değişiklik yapmaya gerek yok
-              console.log('Full URL detected:', processedPet.image);
-            }
-            // FileController URL formatı kontrolü
-            else if (processedPet.image.includes('/api/v1/files/')) {
-              // URL zaten doğru formatta, değişiklik yapmaya gerek yok
-              console.log('File controller URL detected:', processedPet.image);
-            }
-            // Göreceli URL kontrolü
-            else {
-              // Dosya adı olabilir, FileController URL'ine dönüştür
-              processedPet.image = `/api/v1/files/${processedPet.image}`;
-            }
+          // AdDetail'deki gibi resim URL'lerini düzenliyoruz
+          if (processedPet.imageUrl) {
+            processedPet.imageUrl = processedPet.imageUrl.startsWith('http') 
+              ? processedPet.imageUrl 
+              : `${API_BASE_URL}${processedPet.imageUrl}`;
           }
           
-          // ImageUrl kontrolü
-          if (processedPet.imageUrl) {
-            // Base64 kontrolü
-            if (processedPet.imageUrl.startsWith('data:image')) {
-              console.log('Base64 imageUrl detected, this should be handled on the server side');
-              // Base64 resimler sunucu tarafında işlenmeli, burada sadece log
-            } 
-            // Tam URL kontrolü (http veya https ile başlayan)
-            else if (processedPet.imageUrl.startsWith('http')) {
-              // URL zaten tam, değişiklik yapmaya gerek yok
-              console.log('Full URL detected:', processedPet.imageUrl);
-            }
-            // FileController URL formatı kontrolü
-            else if (processedPet.imageUrl.includes('/api/v1/files/')) {
-              // URL zaten doğru formatta, değişiklik yapmaya gerek yok
-              console.log('File controller URL detected:', processedPet.imageUrl);
-            }
-            // Göreceli URL kontrolü
-            else {
-              // Dosya adı olabilir, FileController URL'ine dönüştür
-              processedPet.imageUrl = `/api/v1/files/${processedPet.imageUrl}`;
-            }
+          if (processedPet.image) {
+            processedPet.image = processedPet.image.startsWith('http') 
+              ? processedPet.image 
+              : `${API_BASE_URL}${processedPet.image}`;
           }
           
           return processedPet;
@@ -92,19 +59,37 @@ const LostPetList: React.FC = () => {
 
   // Resim URL'ini güvenli bir şekilde al
   const getImageUrl = (pet: any): string => {
-    // Önce image alanını kontrol et
-    if (pet.image && !pet.image.startsWith('data:image')) {
-      return pet.image;
-    }
-    
-    // Sonra imageUrl alanını kontrol et
-    if (pet.imageUrl && !pet.imageUrl.startsWith('data:image')) {
+    // Önce imageUrl'i kontrol et
+    if (pet.imageUrl) {
       return pet.imageUrl;
     }
     
-    // Hiçbiri yoksa veya base64 ise placeholder kullan
+    // Sonra image'i kontrol et
+    if (pet.image) {
+      return pet.image;
+    }
+    
+    // Hiçbiri yoksa placeholder kullan
     return '/placeholder-pet.jpg';
   };
+  
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  if (error || lostPets.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-md">
+          <p className="font-medium">{error || "Henüz ilan bulunmamaktadır."}</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div>
@@ -115,6 +100,11 @@ const LostPetList: React.FC = () => {
             src={getImageUrl(pet)} 
             alt={pet.title} 
             className="pet-image" 
+            onError={(e) => {
+              console.error(`Error loading image for pet ${pet.id}:`, e);
+              console.log("Failed image URL:", getImageUrl(pet));
+              (e.target as HTMLImageElement).src = '/placeholder-pet.jpg';
+            }}
           />
           {/* Diğer ilan bilgileri */}
         </div>
