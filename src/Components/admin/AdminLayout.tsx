@@ -8,6 +8,7 @@ import AdNew from './pages/ads/AdNew';
 import AdPending from './pages/ads/AdPending';
 import QnaList from './pages/qna/QnaList';
 import QnaNew from './pages/qna/QnaNew';
+import QnaAnswer from './pages/qna/QnaAnswer';
 import UserList from './pages/users/UserList';
 import UserNew from './pages/users/UserNew';
 
@@ -35,6 +36,7 @@ const AdminLayout = () => {
                 <Route index element={<Navigate to="/admin/qna/list" replace />} />
                 <Route path="list" element={<QnaList />} />
                 <Route path="new" element={<QnaNew />} />
+                <Route path="answer/:id" element={<QnaAnswer />} />
               </Route>
 
               {/* Kullanıcı Yönetimi */}
