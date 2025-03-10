@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import lostPetService from '../../services/lostPetService';
+import axiosInstance from '../../services/axios';
 import './CreateListingPage.css';
 
 interface FormData {
@@ -21,6 +22,7 @@ const CreateListingPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     title: '',
     details: '',
@@ -39,15 +41,57 @@ const CreateListingPage: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      // Sadece önizleme için base64 kullanıyoruz
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewUrl(reader.result as string);
-        setFormData(prev => ({
-          ...prev,
-          imageUrl: reader.result as string
-        }));
       };
       reader.readAsDataURL(file);
+      
+      // Dosyayı hemen sunucuya yükle
+      uploadImage(file);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<void> => {
+    try {
+      setIsUploading(true);
+      
+      // FormData oluştur
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Dosyayı sunucuya yükle
+      // Backend'deki FileController'ın /upload endpoint'ini kullanıyoruz
+      const response = await axiosInstance.post('/api/v1/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      console.log('Image upload response:', response.data);
+      
+      // Sunucudan dönen fileUrl'i kullan
+      if (response.data && response.data.fileUrl) {
+        setFormData(prev => ({
+          ...prev,
+          imageUrl: response.data.fileUrl
+        }));
+      } else if (response.data && response.data.fileName) {
+        // Eğer fileUrl yoksa fileName ile URL oluştur
+        const fileUrl = `/api/v1/files/${response.data.fileName}`;
+        setFormData(prev => ({
+          ...prev,
+          imageUrl: fileUrl
+        }));
+      } else {
+        throw new Error('File URL or name not received from server');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Resim yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -61,29 +105,35 @@ const CreateListingPage: React.FC = () => {
 
   const handleSubmit = async (): Promise<void> => {
     try {
+      // Resim yükleme işlemi devam ediyorsa bekle
+      if (isUploading) {
+        alert('Resim yükleniyor, lütfen bekleyin...');
+        return;
+      }
+      
       const user = localStorage.getItem("user");
       const userData = user ? JSON.parse(user) : null;
-      // TODO: Replace with actual user ID from authentication
+      
       if (!userData) {
         console.error("User data is missing in localStorage");
         return;
       }
-      const userId = userData.id; // This should come from your auth context/state
+      
+      const userId = userData.id;
       
       await lostPetService.createLostPet(userId, {
         ...formData,
         timestamp: Date.now(),
         viewCount: 0,
-        image: formData.imageUrl || "",  // Eğer boşsa varsayılan olarak boş string ata
+        image: formData.imageUrl || "",  // Sunucudan dönen URL'i kullan
         animalType: formData.animalType || "Unknown"
       });
 
-      // Ana sayfaya yönlendir
       alert("İlan başarıyla oluşturuldu");
       navigate('/lost');
     } catch (error) {
       console.error('Error creating listing:', error);
-      // TODO: Add proper error handling/notification
+      alert('İlan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -221,18 +271,21 @@ const CreateListingPage: React.FC = () => {
                 onChange={handleFileSelect}
                 id="file-input"
                 className="file-input"
+                disabled={isUploading}
               />
               <label htmlFor="file-input" className="file-label">
                 {previewUrl ? (
                   <img src={previewUrl} alt="Önizleme" className="preview-image" />
                 ) : (
                   <div className="upload-placeholder">
-                    İLAN GÖRSELİ YÜKLE
+                    {isUploading ? 'YÜKLENIYOR...' : 'İLAN GÖRSELİ YÜKLE'}
                   </div>
                 )}
               </label>
               <p className="upload-note">
-                İnternet hızınıza bağlı olarak yükleme işlemi uzun sürebilir.
+                {isUploading 
+                  ? 'Resim yükleniyor, lütfen bekleyin...' 
+                  : 'İnternet hızınıza bağlı olarak yükleme işlemi uzun sürebilir.'}
               </p>
             </div>
           </div>
