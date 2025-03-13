@@ -1,28 +1,21 @@
 import React from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const UserList = () => {
-  const users = [
-    { id: 1, name: 'Ahmet Yılmaz', email: 'ahmet@example.com', role: 'Kullanıcı', status: 'Aktif', joinDate: '2024-02-15' },
-    { id: 2, name: 'Mehmet Kaya', email: 'mehmet@example.com', role: 'Premium', status: 'Aktif', joinDate: '2024-01-20' },
-    { id: 3, name: 'Ayşe Demir', email: 'ayse@example.com', role: 'Kullanıcı', status: 'Askıda', joinDate: '2024-03-10' },
+const PendingUserList = () => {
+  const pendingUsers = [
+    { id: 1, name: 'Zeynep Yıldız', email: 'zeynep@example.com', role: 'Kullanıcı', requestDate: '2024-03-15' },
+    { id: 2, name: 'Ali Kara', email: 'ali@example.com', role: 'Premium', requestDate: '2024-03-14' },
+    { id: 3, name: 'Fatma Şahin', email: 'fatma@example.com', role: 'Kullanıcı', requestDate: '2024-03-12' },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Kullanıcı Listesi</h1>
-        <div className="flex gap-3">
-          
-          <Link
-            to="/admin/users/new"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Yeni Kullanıcı
-          </Link>
-        </div>
+      <div className="flex items-center gap-4">
+        <Link to="/admin/users/list" className="text-gray-500 hover:text-gray-700">
+          <ArrowLeft size={24} />
+        </Link>
+        <h1 className="text-2xl font-semibold text-gray-900">Onay Bekleyen Kullanıcılar</h1>
       </div>
 
       <div className="bg-white rounded-lg shadow">
@@ -39,12 +32,7 @@ const UserList = () => {
             <select className="px-4 py-2 rounded-lg border border-gray-200">
               <option value="">Tüm Roller</option>
               <option value="user">Kullanıcı</option>
-              <option value="premium">Premium</option>
-            </select>
-            <select className="px-4 py-2 rounded-lg border border-gray-200">
-              <option value="">Tüm Durumlar</option>
-              <option value="aktif">Aktif</option>
-              <option value="askida">Askıda</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
         </div>
@@ -56,13 +44,12 @@ const UserList = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kullanıcı</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-posta</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kayıt Tarihi</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Başvuru Tarihi</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user) => (
+              {pendingUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{user.name}</div>
@@ -75,17 +62,10 @@ const UserList = () => {
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === 'Aktif' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.joinDate}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.requestDate}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</button>
-                    <button className="text-red-600 hover:text-red-900">Askıya Al</button>
+                    <button className="text-green-600 hover:text-green-900 mr-3">Onayla</button>
+                    <button className="text-red-600 hover:text-red-900">Reddet</button>
                   </td>
                 </tr>
               ))}
@@ -96,7 +76,7 @@ const UserList = () => {
         <div className="px-6 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Toplam 3 kullanıcı gösteriliyor
+              Toplam {pendingUsers.length} onay bekleyen kullanıcı gösteriliyor
             </div>
             <div className="flex gap-2">
               <button className="px-3 py-1 border border-gray-300 rounded-md text-sm">Önceki</button>
@@ -110,4 +90,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default PendingUserList; 

@@ -11,6 +11,7 @@ import QnaNew from './pages/qna/QnaNew';
 import QnaAnswer from './pages/qna/QnaAnswer';
 import UserList from './pages/users/UserList';
 import UserNew from './pages/users/UserNew';
+import PendingUserList from './pages/users/PendingUserList';
 
 const AdminLayout = () => {
   return (
@@ -44,6 +45,7 @@ const AdminLayout = () => {
                 <Route index element={<Navigate to="/admin/users/list" replace />} />
                 <Route path="list" element={<UserList />} />
                 <Route path="new" element={<UserNew />} />
+                <Route path="pending" element={<PendingUserList />} />
               </Route>
             </Routes>
           </main>

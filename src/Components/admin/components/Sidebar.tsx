@@ -60,7 +60,7 @@ const Sidebar = () => {
       subItems: [
         { icon: <UserPlus size={16} />, title: 'Yeni Kullanıcı', path: '/admin/users/new' },
         { icon: <List size={16} />, title: 'Kullanıcı Listesi', path: '/admin/users/list' },
-        { icon: <Ban size={16} />, title: 'Yasaklı Kullanıcılar', path: '/admin/users/banned' },
+        { icon: <FileEdit size={16} />, title: 'Onay Bekleyenler', path: '/admin/users/pending' },
       ]
     },
     {
