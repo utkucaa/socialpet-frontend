@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, MapPin, Phone, Mail, Star, Filter, Map as MapIcon, List, ChevronDown, Clock, Building2, Users } from 'lucide-react';
+import { MapPin, Phone, Mail, Star, Map as MapIcon, List, Clock, Building2, Users } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -30,20 +30,17 @@ type Review = {
   avatar: string;
 };
 
-const cities = [
-  'Konya',
-  'İstanbul',
-  'Ankara',
-  'İzmir',
-  'Antalya'
-];
+type City = {
+  il_adi: string;
+  plaka_kodu: string;
+  ilceler: District[];
+};
 
-const districts = {
-  'Konya': ['Selçuklu', 'Meram', 'Karatay'],
-  'İstanbul': ['Kadıköy', 'Beşiktaş', 'Üsküdar'],
-  'Ankara': ['Çankaya', 'Keçiören', 'Yenimahalle'],
-  'İzmir': ['Konak', 'Karşıyaka', 'Bornova'],
-  'Antalya': ['Muratpaşa', 'Konyaaltı', 'Kepez']
+type District = {
+  ilce_adi: string;
+  plaka_kodu: string;
+  ilce_kodu: string;
+  il_adi: string;
 };
 
 const sampleData: Business[] = [
@@ -109,12 +106,12 @@ const sampleData: Business[] = [
 
 export function VeterinerPetshop() {
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<'all' | 'Veteriner' | 'Petshop'>('all');
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [cities, setCities] = useState<City[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
 
   // Fix Leaflet default icon issue
   useEffect(() => {
@@ -128,18 +125,43 @@ export function VeterinerPetshop() {
     });
   }, []);
 
-  const availableDistricts = selectedCity ? districts[selectedCity as keyof typeof districts] : [];
+  // Fetch cities and districts from il-ilce.json
+  useEffect(() => {
+    const fetchCitiesAndDistricts = async () => {
+      try {
+        const response = await fetch('/il-ilce.json');
+        const data = await response.json();
+        setCities(data.data);
+      } catch (error) {
+        console.error('Error fetching cities and districts:', error);
+      }
+    };
+
+    fetchCitiesAndDistricts();
+  }, []);
+
+  // Update districts when city changes
+  useEffect(() => {
+    if (selectedCity) {
+      const city = cities.find(city => city.il_adi === selectedCity);
+      if (city) {
+        setDistricts(city.ilceler);
+      } else {
+        setDistricts([]);
+      }
+    } else {
+      setDistricts([]);
+    }
+  }, [selectedCity, cities]);
 
   const filteredBusinesses = useMemo(() => {
     return sampleData.filter(business => {
-      const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           business.address.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = selectedType === 'all' || business.type === selectedType;
       const matchesCity = !selectedCity || business.city === selectedCity;
       const matchesDistrict = !selectedDistrict || business.district === selectedDistrict;
-      return matchesSearch && matchesType && matchesCity && matchesDistrict;
+      return matchesType && matchesCity && matchesDistrict;
     });
-  }, [searchTerm, selectedType, selectedCity, selectedDistrict]);
+  }, [selectedType, selectedCity, selectedDistrict]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -161,99 +183,76 @@ export function VeterinerPetshop() {
               Size en yakın veteriner ve petshopları keşfedin
             </p>
             
-            {/* Search Bar */}
-            <div className="bg-white rounded-lg shadow-lg p-2">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="İşletme adı veya adres ara..."
-                    className="w-full rounded-lg border-0 py-3 pl-10 pr-4 focus:ring-2 focus:ring-blue-500"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                    className="flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+            {/* Selection Bar */}
+            <div className="bg-white rounded-lg shadow-lg p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    İşletme Tipi
+                  </label>
+                  <select
+                    className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value as any)}
                   >
-                    <Filter className="h-5 w-5 mr-2" />
-                    Filtrele
-                  </button>
-                  <div className="flex rounded-lg border border-gray-200 bg-white">
-                    <button
-                      className={`flex items-center px-4 py-2 rounded-l-lg ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                      onClick={() => setViewMode('list')}
-                    >
-                      <List className="h-5 w-5" />
-                    </button>
-                    <button
-                      className={`flex items-center px-4 py-2 rounded-r-lg ${viewMode === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                      onClick={() => setViewMode('map')}
-                    >
-                      <MapIcon className="h-5 w-5" />
-                    </button>
-                  </div>
+                    <option value="all">Tümü</option>
+                    <option value="Veteriner">Veteriner</option>
+                    <option value="Petshop">Petshop</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Şehir
+                  </label>
+                  <select
+                    className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    value={selectedCity}
+                    onChange={(e) => {
+                      setSelectedCity(e.target.value);
+                      setSelectedDistrict('');
+                    }}
+                  >
+                    <option value="">Tüm Şehirler</option>
+                    {cities.map(city => (
+                      <option key={city.plaka_kodu} value={city.il_adi}>{city.il_adi}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    İlçe
+                  </label>
+                  <select
+                    className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    value={selectedDistrict}
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    disabled={!selectedCity}
+                  >
+                    <option value="">Tüm İlçeler</option>
+                    {districts.map(district => (
+                      <option key={district.ilce_kodu} value={district.ilce_adi}>{district.ilce_adi}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
-              
-              {/* Filter Panel */}
-              {isFilterOpen && (
-                <div className="mt-4 p-4 border-t border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        İşletme Tipi
-                      </label>
-                      <select
-                        className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedType}
-                        onChange={(e) => setSelectedType(e.target.value as any)}
-                      >
-                        <option value="all">Tümü</option>
-                        <option value="Veteriner">Veteriner</option>
-                        <option value="Petshop">Petshop</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Şehir
-                      </label>
-                      <select
-                        className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedCity}
-                        onChange={(e) => {
-                          setSelectedCity(e.target.value);
-                          setSelectedDistrict('');
-                        }}
-                      >
-                        <option value="">Tüm Şehirler</option>
-                        {cities.map(city => (
-                          <option key={city} value={city}>{city}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        İlçe
-                      </label>
-                      <select
-                        className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                        value={selectedDistrict}
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
-                        disabled={!selectedCity}
-                      >
-                        <option value="">Tüm İlçeler</option>
-                        {availableDistricts.map(district => (
-                          <option key={district} value={district}>{district}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+              <div className="mt-4 flex justify-end">
+                <div className="flex rounded-lg border border-gray-200 bg-white">
+                  <button
+                    className={`flex items-center px-4 py-2 rounded-l-lg ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    <List className="h-5 w-5 mr-2" />
+                    Liste
+                  </button>
+                  <button
+                    className={`flex items-center px-4 py-2 rounded-r-lg ${viewMode === 'map' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                    onClick={() => setViewMode('map')}
+                  >
+                    <MapIcon className="h-5 w-5 mr-2" />
+                    Harita
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
