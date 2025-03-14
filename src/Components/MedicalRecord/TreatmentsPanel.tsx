@@ -171,10 +171,10 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
             setVeterinarian('');
             setShowModal(true);
           }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
         >
           <Plus size={16} className="mr-2" />
-          Add Treatment
+          Tedavi Ekle
         </button>
       </div>
 
@@ -186,7 +186,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
 
       {isLoading ? (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
           <p className="mt-2 text-gray-500">Loading treatments...</p>
         </div>
       ) : treatments.length === 0 ? (
@@ -196,7 +196,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Treatment Type
@@ -230,13 +230,13 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleEdit(treatment)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-orange-600 hover:text-orange-900 mr-4"
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => handleDelete(treatment.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -266,7 +266,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   type="text"
                   value={treatmentType}
                   onChange={(e) => setTreatmentType(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter treatment type"
                 />
               </div>
@@ -279,7 +279,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter treatment description"
                   rows={3}
                 />
@@ -294,7 +294,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   type="date"
                   value={treatmentDate}
                   onChange={(e) => setTreatmentDate(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               
@@ -307,7 +307,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   type="text"
                   value={veterinarian}
                   onChange={(e) => setVeterinarian(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter veterinarian name"
                 />
               </div>
@@ -318,14 +318,14 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   onClick={() => setShowModal(false)}
                   className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
+                  {isSubmitting ? 'Saving...' : 'Kaydet'}
                 </button>
               </div>
             </form>

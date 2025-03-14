@@ -91,10 +91,10 @@ function PetList() {
           <h1 className="text-3xl font-bold text-gray-900">My Pets</h1>
           <button
             onClick={handleAddPet}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center"
+            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center"
           >
             <Plus className="mr-2 h-5 w-5" />
-            Add New Pet
+            Yeni Evcil Hayvan Ekle
           </button>
         </div>
         
@@ -128,7 +128,7 @@ function PetList() {
                   <div className="mt-6 flex justify-between">
                     <Link
                       to={`/medical-record/${pet.id}`}
-                      className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="px-3 py-1.5  bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       Medical Record
                     </Link>

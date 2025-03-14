@@ -14,18 +14,18 @@ interface TabNavigationProps {
 }
 
 const tabs = [
-  { name: 'Vaccinations', icon: Syringe },
-  { name: 'Treatments', icon: Stethoscope },
-  { name: 'Appointments', icon: Calendar },
-  { name: 'Medications', icon: Pill },
-  { name: 'Allergies', icon: AlertTriangle },
-  { name: 'Weight Records', icon: Scale },
+  { name: 'Aşılar', icon: Syringe },
+  { name: 'Tedaviler', icon: Stethoscope },
+  { name: 'Randevular', icon: Calendar },
+  { name: 'İlaçlar', icon: Pill },
+  { name: 'Alerjiler', icon: AlertTriangle },
+  { name: 'Kilo Kayıtları', icon: Scale },
 ];
 
 export const TabNavigation: React.FC<TabNavigationProps> = ({ children }) => {
   return (
     <Tab.Group>
-      <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+      <Tab.List className="flex space-x-1 rounded-xl bg-gray-200 p-1">
         {tabs.map((tab) => (
           <Tab
             key={tab.name}
@@ -33,8 +33,8 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ children }) => {
               `w-full rounded-lg py-2.5 text-sm font-medium leading-5
               ${
                 selected
-                  ? 'bg-white text-blue-700 shadow'
-                  : 'text-gray-600 hover:bg-white/[0.12] hover:text-blue-600'
+                  ? 'bg-white text-orange-600 shadow'
+                  : 'text-gray-600 hover:bg-white/[0.12] hover:text-orange-500'
               }
               flex items-center justify-center space-x-2`
             }

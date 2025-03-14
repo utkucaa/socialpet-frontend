@@ -23,6 +23,7 @@ import PetList from "./Pets/PetList";
 import HelpAndInfo from "./HelpAndInfo/HelpAndInfo";
 import AdminLayout from "./admin/AdminLayout";
 import VetPetShop from "./VetPetShop/VetPetShop";
+import BreedDetector from "./CinsDedektifi";
 
 function AppRoutes() {
   const [user, setUser] = useState(null); 
@@ -57,7 +58,7 @@ function AppRoutes() {
             <Route path="/lost/create" element={<CreateListingPage />} />
             <Route path="/health-tracking" element={<MedicalRecord />} />
             <Route path="/medical-record/:petId" element={<MedicalRecord />} />
-            <Route path="/breed-detector" element={<div>Cins Dedektifi</div>} />
+            <Route path="/breed-detector" element={<BreedDetector />} />
             <Route path="/help-info" element={<HelpAndInfo />} />
             <Route path="/question/:id" element={<QuestionDetail />} />
             <Route path="/donate" element={<Donate />} />

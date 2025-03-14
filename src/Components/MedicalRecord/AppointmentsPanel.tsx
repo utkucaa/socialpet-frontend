@@ -139,11 +139,11 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ petId }) =
         <h2 className="text-xl font-semibold text-gray-800">Appointments</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
           disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Schedule Appointment
+          Randevu Ekle
         </button>
       </div>
 
@@ -296,7 +296,7 @@ export const AppointmentsPanel: React.FC<AppointmentsPanelProps> = ({ petId }) =
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"

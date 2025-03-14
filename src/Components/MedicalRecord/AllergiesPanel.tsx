@@ -185,10 +185,10 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ petId }) => {
             setNotes('');
             setShowModal(true);
           }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
         >
           <Plus size={16} className="mr-2" />
-          Add Allergy
+          Alerji Ekle
         </button>
       </div>
 
@@ -343,14 +343,14 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ petId }) => {
                   onClick={() => setShowModal(false)}
                   className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
+                  {isSubmitting ? 'Saving...' : 'Kaydet'}
                 </button>
               </div>
             </form>

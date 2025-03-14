@@ -90,7 +90,6 @@ const LostPetDetail: React.FC = () => {
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
-    // Here you would typically call an API to save the favorite status
   };
 
   if (isLoading) {

@@ -180,8 +180,8 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
       {
         label: 'Weight',
         data: weightRecords.map(record => record.weight),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+        borderColor: 'rgb(234, 88, 12)',
+        backgroundColor: 'rgba(234, 88, 12, 0.5)',
         tension: 0.3,
       },
     ],
@@ -214,11 +214,11 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
         <h2 className="text-xl font-semibold text-gray-800">Weight Records</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
           disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Weight Record
+          Kilo Kayıtları EKle
         </button>
       </div>
 
@@ -244,7 +244,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
           {/* Weight Records Table */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
@@ -274,10 +274,10 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
-                        <button className="text-blue-600 hover:text-blue-800">
+                        <button className="text-orange-600 hover:text-orange-800">
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-800">
+                        <button className="text-gray-600 hover:text-gray-800">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -305,7 +305,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                     min="0"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    className="flex-1 min-w-0 block w-full rounded-none rounded-l-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="flex-1 min-w-0 block w-full rounded-none rounded-l-md border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                     required
                   />
                   <select
@@ -324,7 +324,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   required
                 />
               </div>
@@ -333,7 +333,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   rows={3}
                 />
               </div>
@@ -347,14 +347,14 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-400"
+                  className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700 disabled:bg-orange-400"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
+                  {isSubmitting ? 'Saving...' : 'Kaydet'}
                 </button>
               </div>
             </form>

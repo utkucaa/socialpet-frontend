@@ -41,16 +41,12 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
       setIsLoading(true);
       setError(null);
       
-      // Make API call to get vaccinations
       const response = await getVaccinations(petId);
-      
-      // Handle empty or invalid response
-      if (!response || !Array.isArray(response)) {
+            if (!response || !Array.isArray(response)) {
         setVaccinations([]);
         return;
       }
       
-      // Transform API data to match our component's Vaccination type
       const transformedVaccinations = response.map(item => ({
         id: item.id?.toString() || String(Math.random()),
         name: item.vaccineName || '',
@@ -67,12 +63,10 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
     }
   };
 
-  // Fetch vaccinations when component mounts or refreshCounter changes
   useEffect(() => {
     fetchVaccinations();
   }, [petId, refreshCounter]);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -90,7 +84,6 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
       setIsSubmitting(true);
       setError(null);
       
-      // Create vaccination data object
       const vaccinationData = {
         vaccineName,
         vaccinationDate,
@@ -98,21 +91,18 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
       };
       
       if (editingVaccination) {
-        // Update existing vaccination
         await updateVaccination(petId, editingVaccination.id, vaccinationData);
       } else {
-        // Add new vaccination
         await addVaccination(petId, vaccinationData);
       }
       
-      // Reset form
+    
       setVaccineName('');
       setVaccinationDate('');
       setVeterinarian('');
       setShowModal(false);
       setEditingVaccination(null);
       
-      // Force refresh by incrementing counter
       setRefreshCounter(prev => prev + 1);
     } catch (err) {
       console.error('Error saving vaccination:', err);
@@ -122,7 +112,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
     }
   };
 
-  // Handle edit button click
+  
   const handleEdit = (vaccination: Vaccination) => {
     setEditingVaccination(vaccination);
     setVaccineName(vaccination.name);
@@ -131,7 +121,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
     setShowModal(true);
   };
 
-  // Handle delete button click
+  
   const handleDelete = async (vaccinationId: string) => {
     if (!petId) {
       setError('Pet ID is missing');
@@ -144,7 +134,6 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
     
     try {
       await deleteVaccination(petId, vaccinationId);
-      // Force refresh by incrementing counter
       setRefreshCounter(prev => prev + 1);
     } catch (err) {
       console.error('Error deleting vaccination:', err);
@@ -164,10 +153,10 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
             setVeterinarian('');
             setShowModal(true);
           }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
         >
           <Plus size={16} className="mr-2" />
-          Add Vaccination
+          Aşı Ekle
         </button>
       </div>
 
@@ -179,7 +168,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
 
       {isLoading ? (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
           <p className="mt-2 text-gray-500">Loading vaccinations...</p>
         </div>
       ) : vaccinations.length === 0 ? (
@@ -189,7 +178,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Vaccine
@@ -222,13 +211,13 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleEdit(vaccination)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-orange-600 hover:text-orange-900 mr-4"
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => handleDelete(vaccination.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-gray-600 hover:text-gray-900"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -240,7 +229,6 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
         </div>
       )}
 
-      {/* Add/Edit Vaccination Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -258,7 +246,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
                   type="text"
                   value={vaccineName}
                   onChange={(e) => setVaccineName(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter vaccine name"
                 />
               </div>
@@ -272,7 +260,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
                   type="date"
                   value={vaccinationDate}
                   onChange={(e) => setVaccinationDate(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
               
@@ -285,7 +273,7 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
                   type="text"
                   value={veterinarian}
                   onChange={(e) => setVeterinarian(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter veterinarian name"
                 />
               </div>
@@ -296,14 +284,14 @@ export const VaccinationsPanel: React.FC<VaccinationsPanelProps> = ({ petId }) =
                   onClick={() => setShowModal(false)}
                   className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
+                  {isSubmitting ? 'Saving...' : 'Kaydet'}
                 </button>
               </div>
             </form>

@@ -151,11 +151,11 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
         <h2 className="text-xl font-semibold text-gray-800">Medications</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
           disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Medication
+          İlaç Ekle
         </button>
       </div>
 
@@ -188,10 +188,10 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="font-medium text-gray-900">{medication.name}</h4>
                       <div className="flex space-x-2">
-                        <button className="text-blue-600 hover:text-blue-800">
+                        <button className="text-orange-600 hover:text-orange-800">
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-800">
+                        <button className="text-gray-600 hover:text-gray-800">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -225,10 +225,10 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="font-medium text-gray-700">{medication.name}</h4>
                       <div className="flex space-x-2">
-                        <button className="text-blue-600 hover:text-blue-800">
+                        <button className="text-orange-600 hover:text-orange-800">
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-800">
+                        <button className="text-gray-600 hover:text-gray-800">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -295,7 +295,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   required
                 />
               </div>
@@ -305,7 +305,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
               <div>
@@ -314,7 +314,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                   type="text"
                   value={prescribedBy}
                   onChange={(e) => setPrescribedBy(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   required
                 />
               </div>
@@ -323,7 +323,7 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   rows={3}
                 />
               </div>
@@ -337,11 +337,11 @@ export const MedicationsPanel: React.FC<MedicationsPanelProps> = ({ petId }) => 
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  İptal Et
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-400"
+                  className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700 disabled:bg-orange-400"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Saving...' : 'Save'}
