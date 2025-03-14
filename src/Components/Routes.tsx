@@ -13,7 +13,7 @@ import ProfilePage from "./Profile/ProfilePage";
 import AdoptionPage from "./Adoption/AdoptionPage";
 import CreatedPage from "./Adoption/CreatedPage";
 import LostPage from "./Lost/LostPage";
-import CreateListingPage from "./Lost/CreateListingPage"; // Bu satırı ekleyin
+import CreateListingPage from "./Lost/CreateListingPage"; 
 import QuestionDetail from "./HelpAndInfo/QuestionDetail";
 import AdDetail from "./Adoption/AdDetail";
 import Donate from "./Donate/Donate";
@@ -25,10 +25,9 @@ import AdminLayout from "./admin/AdminLayout";
 import VetPetShop from "./VetPetShop/VetPetShop";
 
 function AppRoutes() {
-  const [user, setUser] = useState(null); // Kullanıcı bilgisini tutacak state
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
-    // Sayfa yüklendiğinde localStorage'dan kullanıcı bilgisini al
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));

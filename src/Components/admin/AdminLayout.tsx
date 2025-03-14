@@ -12,6 +12,15 @@ import QnaAnswer from './pages/qna/QnaAnswer';
 import UserList from './pages/users/UserList';
 import UserNew from './pages/users/UserNew';
 import PendingUserList from './pages/users/PendingUserList';
+import PetHealthList from './pages/pet-health/PetHealthList';
+import PetHealthNew from './pages/pet-health/PetHealthNew';
+import VaccineTracking from './pages/pet-health/VaccineTracking';
+import Treatments from './pages/pet-health/Treatments';
+import Appointments from './pages/pet-health/Appointments';
+import DonationList from './pages/donations/DonationList';
+import DonationNew from './pages/donations/DonationNew';
+import DonationEdit from './pages/donations/DonationEdit';
+import DonationImageUpload from './pages/donations/DonationImageUpload';
 
 const AdminLayout = () => {
   return (
@@ -46,6 +55,24 @@ const AdminLayout = () => {
                 <Route path="list" element={<UserList />} />
                 <Route path="new" element={<UserNew />} />
                 <Route path="pending" element={<PendingUserList />} />
+              </Route>
+              
+              {/* Evcil Hayvan Sağlığı */}
+              <Route path="/admin/pet-health">
+                <Route index element={<PetHealthList />} />
+                <Route path="new" element={<PetHealthNew />} />
+                <Route path="vaccines" element={<VaccineTracking />} />
+                <Route path="treatments" element={<Treatments />} />
+                <Route path="appointments" element={<Appointments />} />
+              </Route>
+
+              {/* Bağış Kurumları */}
+              <Route path="/admin/donations">
+                <Route index element={<Navigate to="/admin/donations/list" replace />} />
+                <Route path="list" element={<DonationList />} />
+                <Route path="new" element={<DonationNew />} />
+                <Route path="edit/:id" element={<DonationEdit />} />
+                <Route path="upload-image/:id" element={<DonationImageUpload />} />
               </Route>
             </Routes>
           </main>

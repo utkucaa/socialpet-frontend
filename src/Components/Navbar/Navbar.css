@@ -1,8 +1,8 @@
 .spline-sans-mono {
     font-family: "Spline Sans Mono", monospace;
-  }
+}
 
-.n-container{
+.n-container {
     height: 10vh;
     margin-top: 14px;
     display: flex;
@@ -12,85 +12,168 @@
 }
 
 .n-logo {
-    width: 200px; 
-    height: auto;
+    width: auto;
+    height: 40px;
     margin-right: 10px;
-    margin-left: -10px;
-  }
-
-
-.n-left{
-    flex:1;
-    align-items: center;
-    display: flex;
-    gap:1 rem;
+    transition: transform 0.3s ease;
 }
 
+.n-logo:hover {
+    transform: scale(1.05);
+}
 
-.n-right{
+.n-left {
+    flex: 1;
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+}
+
+.n-right {
     display: flex;
     flex: 5;
     align-items: center;
     justify-content: center;
-    font-weight: 400; 
+    font-weight: 400;
 }
 
-.n-list{
+.n-list {
     flex: 10;
 }
 
 .n-list a {
-    text-decoration: none; 
-    color: black; 
+    text-decoration: none;
+    color: black;
     font-weight: bold;
     font-size: 16px;
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .n-list a:hover {
-    color:  #1a237e; 
+    color: #4f46e5; 
 }
 
-.n-list>ul{
+.n-list>ul {
     display: flex;
-    gap: 2.7rem;
-    margin-right: 2rem;
-    margin-left: -10px;
+    gap: 2rem;
     align-items: center;
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .n-list>ul>li {
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .giris-cıkıs {
-    background-color: #6b6f72;
-    color: white; 
-    padding: 5px 15px; 
-    border: none; 
-    border-radius: 10px; 
-    cursor: pointer; 
-    font-size: 16px; 
-    font-weight: bold; 
+    background-color: #f97316; 
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-right: -14px;
     width: auto;
-} 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .giris-cıkıs:hover {
-    background-color: #4b5b63; 
-    transform: scale(1.05); 
+    background-color: #ea580c; 
+    transform: scale(1.05);
 }
 
 .giris-cıkıs a {
-    text-decoration: none; 
-    color: black; 
-    font-weight: bold; 
-    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 .giris-cıkıs a:hover {
-    color: white; 
+    color: white;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 50;
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.dropdown-trigger:hover .dropdown-menu,
+.dropdown-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    padding: 10px 16px;
+    display: block;
+    color: #374151; 
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #eef2ff; 
+}
+
+.dropdown-item.danger {
+    color: #dc2626; 
+}
+
+.dropdown-item.danger:hover {
+    background-color: #fee2e2; 
+}
+
+/* Mobile menu improvements */
+@media (max-width: 768px) {
+    .mobile-menu {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}
+
+.md\:space-x-2 > * {
+    white-space: nowrap;
+}
+
+.md\:space-x-4 > * {
+    white-space: nowrap;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.md\:flex {
+    flex-wrap: nowrap;
+}
+
+.flex-grow {
+    justify-content: center;
+    padding-left: 0;
+}
+
+.md\:justify-center {
+    justify-content: center;
+}
+
+.md\:space-x-4 > * + * {
+    margin-left: 1rem !important;
 }

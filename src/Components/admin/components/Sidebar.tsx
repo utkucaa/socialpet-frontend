@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Newspaper,
@@ -22,7 +22,9 @@ import {
   Bell,
   Syringe,
   Building,
-  BadgeHelp
+  BadgeHelp,
+  Calendar,
+  Pill
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -69,27 +71,13 @@ const Sidebar = () => {
       path: '/admin/pet-health',
       subItems: [
         { icon: <Plus size={16} />, title: 'Yeni Kayıt', path: '/admin/pet-health/new' },
+        { icon: <List size={16} />, title: 'Sağlık Kayıtları', path: '/admin/pet-health' },
         { icon: <Syringe size={16} />, title: 'Aşı Takibi', path: '/admin/pet-health/vaccines' },
+        { icon: <Pill size={16} />, title: 'Tedaviler', path: '/admin/pet-health/treatments' },
+        { icon: <Calendar size={16} />, title: 'Randevular', path: '/admin/pet-health/appointments' },
       ]
     },
-    {
-      icon: <Brain size={20} />,
-      title: 'Yapay Zeka Logları',
-      path: '/admin/ai-logs',
-      subItems: [
-        { icon: <List size={16} />, title: 'Tüm Loglar', path: '/admin/ai-logs/list' },
-        { icon: <Bell size={16} />, title: 'Hata Bildirimleri', path: '/admin/ai-logs/errors' },
-      ]
-    },
-    {
-      icon: <Store size={20} />,
-      title: 'Veteriner & Petshop',
-      path: '/admin/businesses',
-      subItems: [
-        { icon: <Building size={16} />, title: 'İşletme Ekle', path: '/admin/businesses/new' },
-        { icon: <List size={16} />, title: 'İşletme Listesi', path: '/admin/businesses/list' },
-      ]
-    },
+    
     {
       icon: <Heart size={20} />,
       title: 'Bağış Kurumları',
