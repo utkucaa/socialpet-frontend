@@ -57,15 +57,7 @@ const Donate: React.FC = () => {
     <div className="main-container">
       {/* Üst Kısım - Resimli Alan */}
       <div className="hero-section">
-        <nav className="nav-menu">
-          <ul>
-            <li>•Barınaklara Bağış</li>
-            <li>•Veteriner Klinikleri</li>
-            <li>•PetShop</li>
-            <li>•Yardım ve Bilgi</li>
-            <li>•Fotoğraf Yarışması</li>
-          </ul>
-        </nav>
+        
         <div className="hero-content">
           <div className="title-box">
             <h1>Barınaklara Bağış</h1>

@@ -181,7 +181,7 @@ const UserList = () => {
                       {new Date(user.createdAt).toLocaleDateString('tr-TR')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/admin/users/edit/${user.id}`} className="text-indigo-600 hover:text-indigo-900 mr-3">
+                      <Link to={`/admin/users/edit/${user.id}`} className="text-purple-600 hover:text-indigo-900 mr-3">
                         Düzenle
                       </Link>
                       {user.status === 'ACTIVE' ? (

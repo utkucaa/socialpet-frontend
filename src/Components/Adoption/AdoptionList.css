@@ -6,7 +6,7 @@
 
 .adoption-listings h2 {
   font-size: 2rem;
-  color: #333;
+  color: #5e35b1;
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -24,11 +24,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.2s ease-in-out;
+  border: 1px solid #ede7f6;
 }
 
 .listing-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(126, 87, 194, 0.2);
+  border-color: #d1c4e9;
 }
 
 .listing-image {
@@ -50,7 +52,7 @@
 .listing-info h3 {
   font-size: 1.2rem;
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: #5e35b1;
 }
 
 .pet-name {
@@ -71,6 +73,12 @@
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #666;
+}
+
+.pet-details span {
+  background-color: #ede7f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
 }
 
 .date {

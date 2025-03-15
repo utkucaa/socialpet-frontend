@@ -100,7 +100,7 @@ const Sidebar = () => {
     <div className="h-screen w-64 bg-white border-r border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <PawPrint className="text-indigo-600" size={32} />
+          <PawPrint className="text-purple-600" size={32} />
           <h1 className="text-xl font-bold text-gray-800">SocialPet</h1>
         </div>
       </div>
@@ -113,7 +113,7 @@ const Sidebar = () => {
                 <button
                   onClick={() => setExpandedItem(expandedItem === item.path ? null : item.path)}
                   className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors ${location.pathname.startsWith(item.path)
-                      ? 'bg-indigo-50 text-indigo-600'
+                      ? 'bg-indigo-50 text-purple-600'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -139,7 +139,7 @@ const Sidebar = () => {
                           className={({ isActive }) =>
                             `flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors ${
                               isActive
-                                ? 'bg-indigo-50 text-indigo-600'
+                                ? 'bg-indigo-50 text-purple-600'
                                 : 'text-gray-500 hover:bg-gray-50'
                             }`
                           }

@@ -1,27 +1,26 @@
 import React from 'react';
 import './CallToAction.css';
 import { Link } from 'react-router-dom';
+import { FaPaw, FaArrowRight } from 'react-icons/fa';
 
 const CallToAction: React.FC = () => {
   return (
-    <div 
-    className="call-to-action"
-    style={{
-        backgroundImage: 'url(/buton.jpg)', // Arka plan resmi burada ayarlanıyor
-        backgroundSize: 'contain',
-        backgroundPosition: 'center',
-      }}
-    >
-    <h2>Tıkla ve SocialPet'e İlan Gönder!</h2>
-    <p>
-      Hemen şimdi, "kayıp" veya "sahibi aranıyor" etiketi ile ilan gönder, 
-      binlerce kişiye ücretsiz ulaşsın!
-    </p>
-    <Link to="/lost/create">
-    <button className="cta-button">
-      Tıkla İlan Gönder
-    </button>
-    </Link>
+    <div className="cta-container">
+      <div className="cta-card">
+        <div className="cta-content">
+          <div className="cta-icon">
+            <FaPaw />
+          </div>
+          <h2>Kayıp Dostunuzu Bulalım!</h2>
+          <p>
+            Evcil hayvanınızı mı kaybettiniz? Hemen ücretsiz ilan verin ve binlerce SocialPet kullanıcısına ulaşın. Kayıp dostunuzu bulmanıza yardımcı olalım!
+          </p>
+          <Link to="/lost/create" className="cta-button-link">
+            <span>İlan Oluştur</span>
+            <FaArrowRight />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

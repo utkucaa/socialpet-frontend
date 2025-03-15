@@ -33,8 +33,8 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ children }) => {
               `w-full rounded-lg py-2.5 text-sm font-medium leading-5
               ${
                 selected
-                  ? 'bg-white text-orange-600 shadow'
-                  : 'text-gray-600 hover:bg-white/[0.12] hover:text-orange-500'
+                  ? 'bg-white text-purple-600 shadow'
+                  : 'text-gray-600 hover:bg-white/[0.12] hover:text-purple-500'
               }
               flex items-center justify-center space-x-2`
             }

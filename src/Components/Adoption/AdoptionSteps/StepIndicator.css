@@ -13,11 +13,11 @@
   
   .step.active {
     font-weight: bold;
-    background-color: #007bff; 
+    background-color: #7e57c2; 
     color: white;
   }
   
   .step:hover {
-    background-color: #f1f1f1; 
+    background-color: #ede7f6; 
   }
   

@@ -82,7 +82,7 @@ const AnnouncementList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{announcement.date}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{announcement.author}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</button>
+                    <button className="text-purple-600 hover:text-indigo-900 mr-3">Düzenle</button>
                     <button className="text-red-600 hover:text-red-900">Sil</button>
                   </td>
                 </tr>

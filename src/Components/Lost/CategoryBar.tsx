@@ -32,9 +32,6 @@ const CategoryBar: React.FC = () => {
         <FontAwesomeIcon icon={faDove} style={{ marginRight: '8px' }} />
         Muhabbet Kuşu
       </span>
-      <Link to="/lost/create" className="lost-button">
-        + Kayıp İlanı Ver
-      </Link>
     </div>
   );
 };

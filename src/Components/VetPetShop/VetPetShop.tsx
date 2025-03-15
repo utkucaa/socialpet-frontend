@@ -338,7 +338,7 @@ export function VeterinerPetshop() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-orange-300 py-16">
+      <div className="relative bg-purple-300 py-16">
         <div className="absolute inset-0 overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=1920&auto=format&fit=crop"
@@ -351,7 +351,7 @@ export function VeterinerPetshop() {
             <h1 className="text-4xl font-bold text-white mb-4">
               Veteriner ve Petshop Rehberi
             </h1>
-            <p className="text-xl text-orange-100 mb-8">
+            <p className="text-xl text-purple-100 mb-8">
               Size en yakın veteriner ve petshopları keşfedin
             </p>
             
@@ -415,7 +415,7 @@ export function VeterinerPetshop() {
                     className={`w-full flex items-center justify-center rounded-lg px-4 py-2 text-white ${
                       !selectedCity || !selectedDistrict
                         ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-orange-300 hover:bg-orange-400'
+                        : 'bg-purple-300 hover:bg-purple-400'
                     }`}
                   >
                     <Search className="mr-2 h-5 w-5" />
@@ -532,9 +532,9 @@ function BusinessCard({ business, onClick }: { business: Business; onClick: () =
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">{business.name}</h3>
             {business.rating > 0 && (
-              <div className="flex items-center rounded-full bg-orange-50 px-2 py-1">
-                <Star className="mr-1 h-4 w-4 fill-orange-300 text-orange-300" />
-                <span className="font-medium text-orange-300">{business.rating.toFixed(1)}</span>
+              <div className="flex items-center rounded-full bg-purple-50 px-2 py-1">
+                <Star className="mr-1 h-4 w-4 fill-orange-300 text-purple-300" />
+                <span className="font-medium text-purple-300">{business.rating.toFixed(1)}</span>
               </div>
             )}
           </div>
@@ -553,7 +553,7 @@ function BusinessCard({ business, onClick }: { business: Business; onClick: () =
           {business.formatted_phone_number && (
             <div className="flex items-center">
               <Phone className="mr-2 h-4 w-4 text-gray-400" />
-              <a href={`tel:${business.formatted_phone_number}`} className="hover:text-orange-300">
+              <a href={`tel:${business.formatted_phone_number}`} className="hover:text-purple-300">
                 {business.formatted_phone_number}
               </a>
             </div>
@@ -580,7 +580,7 @@ function BusinessCard({ business, onClick }: { business: Business; onClick: () =
         
         <button
           onClick={onClick}
-          className="mt-6 w-full rounded-lg bg-orange-300 px-4 py-2 text-white transition-colors hover:bg-orange-400"
+          className="mt-6 w-full rounded-lg bg-purple-300 px-4 py-2 text-white transition-colors hover:bg-purple-400"
         >
           Detayları Gör
         </button>
@@ -631,9 +631,9 @@ function BusinessDetail({ business, onClose }: { business: Business; onClose: ()
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">{business.name}</h2>
             {business.rating > 0 && (
-              <div className="flex items-center rounded-full bg-orange-50 px-3 py-1">
-                <Star className="mr-1 h-5 w-5 fill-orange-300 text-orange-300" />
-                <span className="font-medium text-orange-300">{business.rating.toFixed(1)}</span>
+              <div className="flex items-center rounded-full bg-purple-50 px-3 py-1">
+                <Star className="mr-1 h-5 w-5 fill-orange-300 text-purple-300" />
+                <span className="font-medium text-purple-300">{business.rating.toFixed(1)}</span>
               </div>
             )}
           </div>
@@ -651,7 +651,7 @@ function BusinessDetail({ business, onClose }: { business: Business; onClose: ()
               {business.formatted_phone_number && (
                 <div className="flex items-center">
                   <Phone className="mr-3 h-5 w-5 text-gray-400" />
-                  <a href={`tel:${business.formatted_phone_number}`} className="hover:text-orange-300">
+                  <a href={`tel:${business.formatted_phone_number}`} className="hover:text-purple-300">
                     {business.formatted_phone_number}
                   </a>
                 </div>
@@ -659,7 +659,7 @@ function BusinessDetail({ business, onClose }: { business: Business; onClose: ()
               {business.website && (
                 <div className="flex items-center">
                   <Mail className="mr-3 h-5 w-5 text-gray-400" />
-                  <a href={business.website} target="_blank" rel="noopener noreferrer" className="hover:text-orange-300 truncate max-w-[250px]">
+                  <a href={business.website} target="_blank" rel="noopener noreferrer" className="hover:text-purple-300 truncate max-w-[250px]">
                     {business.website}
                   </a>
                 </div>
@@ -737,7 +737,7 @@ function BusinessDetail({ business, onClose }: { business: Business; onClose: ()
             <div className="mb-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Değerlendirmeler</h3>
-                <button className="rounded-lg bg-orange-300 px-4 py-2 text-sm font-medium text-white hover:bg-orange-400">
+                <button className="rounded-lg bg-purple-300 px-4 py-2 text-sm font-medium text-white hover:bg-purple-400">
                   Değerlendirme Yap
                 </button>
               </div>

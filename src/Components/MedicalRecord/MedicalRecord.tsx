@@ -97,7 +97,7 @@ function MedicalRecord() {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <div className="text-red-500 text-xl mb-4">{error}</div>
-        <Link to="/pets" className="text-orange-500 hover:underline">
+        <Link to="/pets" className="text-purple-500 hover:underline">
           Return to Pets
         </Link>
       </div>
@@ -109,7 +109,7 @@ function MedicalRecord() {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <div className="text-gray-500 text-xl mb-4">Pet not found</div>
-        <Link to="/pets" className="text-orange-500 hover:underline">
+        <Link to="/pets" className="text-purple-500 hover:underline">
           Return to Pets
         </Link>
       </div>

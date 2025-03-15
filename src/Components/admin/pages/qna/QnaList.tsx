@@ -131,7 +131,7 @@ const QnaList = () => {
                         {question.user?.name || `Kullanıcı #${question.user?.id}`}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <Link to={`/admin/qna/answer/${question.id}`} className="text-indigo-600 hover:text-indigo-900 mr-3">
+                        <Link to={`/admin/qna/answer/${question.id}`} className="text-purple-600 hover:text-indigo-900 mr-3">
                           Yanıtla
                         </Link>
                         <button 

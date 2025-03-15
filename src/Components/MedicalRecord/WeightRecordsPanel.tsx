@@ -214,7 +214,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
         <h2 className="text-xl font-semibold text-gray-800">Weight Records</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
           disabled={!petId}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -274,7 +274,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
-                        <button className="text-orange-600 hover:text-orange-800">
+                        <button className="text-purple-600 hover:text-purple-800">
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button className="text-gray-600 hover:text-gray-800">
@@ -351,7 +351,7 @@ export const WeightRecordsPanel: React.FC<WeightRecordsPanelProps> = ({ petId })
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700 disabled:bg-orange-400"
+                  className="px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-md hover:bg-purple-700 disabled:bg-purple-400"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Saving...' : 'Kaydet'}

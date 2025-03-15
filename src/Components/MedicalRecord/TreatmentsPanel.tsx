@@ -171,7 +171,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
             setVeterinarian('');
             setShowModal(true);
           }}
-          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
         >
           <Plus size={16} className="mr-2" />
           Tedavi Ekle
@@ -230,7 +230,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleEdit(treatment)}
-                      className="text-orange-600 hover:text-orange-900 mr-4"
+                      className="text-purple-600 hover:text-purple-700 mr-4"
                     >
                       <Edit2 size={16} />
                     </button>
@@ -323,7 +323,7 @@ export const TreatmentsPanel: React.FC<TreatmentsPanelProps> = ({ petId }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                   {isSubmitting ? 'Saving...' : 'Kaydet'}
                 </button>

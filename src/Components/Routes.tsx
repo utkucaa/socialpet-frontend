@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
 import Login from "./Login/Login";
-import Intro from "./Intro/Intro";
+import HomePage from "./Intro/HomePage";
 import Register from "./Register/Register";
 import ProfilePage from "./Profile/ProfilePage";
 import AdoptionPage from "./Adoption/AdoptionPage";
@@ -49,7 +49,7 @@ function AppRoutes() {
           {/* @ts-ignore */}
           <Navbar user={user} setUser={setUser} />
           <Routes>
-            <Route path="/" element={<Intro />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/adopt" element={<AdoptionPage />} />

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
 import { FiEdit2, FiPlus, FiMessageCircle, FiBell, FiUser, FiLogOut, FiHeart, FiEye, FiCalendar, FiFileText, FiMapPin, FiTag } from 'react-icons/fi';
 import { FaPaw } from 'react-icons/fa';
@@ -208,38 +207,41 @@ const ProfilePage: React.FC = () => {
   });
 
   return (
-    <div className={`profile-container ${isDarkMode ? 'dark-mode' : ''}`}>
+    <div className={`p-5 max-w-7xl mx-auto font-sans text-gray-700 bg-gray-50 ${isDarkMode ? 'bg-gray-800 text-gray-100' : ''}`}>
       {/* Profile Header Card */}
-      <div className="profile-card">
-        <div className="profile-header">
-          <div className="profile-avatar-container">
-            <div className="profile-avatar">
-              <img src={avatar} alt="Profile" />
-              <div className="avatar-overlay">
-                <div className="edit-icon-container">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div className="p-6 flex items-start gap-6 relative">
+          <div className="relative">
+            <div className="w-30 h-30 rounded-full overflow-hidden relative border-3 border-purple-600 shadow-sm">
+              <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black bg-opacity-30 flex justify-center items-center opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                <div className="text-white text-2xl">
                   <FiEdit2 size={24} />
                 </div>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="avatar-input"
+                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
                 />
               </div>
             </div>
           </div>
-          <div className="profile-info">
-            <h1>{userInfo.name}</h1>
-            <p className="profile-bio">{userData?.bio}</p>
-            <div className="profile-meta">
-              <span><FiCalendar /> Üyelik: {userStats.membershipDate}</span>
+          <div className="flex-1">
+            <h1 className="text-2xl font-semibold text-gray-700 mb-2">{userInfo.name}</h1>
+            <p className="text-base text-gray-500 mb-4 leading-relaxed">{userData?.bio}</p>
+            <div className="flex gap-4 text-sm text-gray-500">
+              <span className="flex items-center gap-1"><FiCalendar /> Üyelik: {userStats.membershipDate}</span>
             </div>
           </div>
-          <div className="profile-actions">
-            <button className="btn btn-edit">
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 py-2 px-4 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
               <FiEdit2 /> Profil Düzenle
             </button>
-            <button className="btn btn-logout" onClick={handleLogout}>
+            <button 
+              className="flex items-center gap-2 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-400 hover:text-white transition-colors"
+              onClick={handleLogout}
+            >
               <FiLogOut /> Çıkış Yap
             </button>
           </div>
@@ -247,102 +249,111 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="stats-section">
-        <div className="stat-card">
-          <div className="stat-icon"><FaPaw /></div>
-          <div className="stat-content">
-            <h3>Toplam İlan</h3>
-            <span className="stat-value">{userStats.totalAds}</span>
+      <div className="grid grid-cols-3 gap-5 mb-6">
+        <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-sm hover:translate-y-[-2px] hover:shadow-md transition-all">
+          <div className="w-12 h-12 rounded-full bg-purple-500 text-white flex items-center justify-center text-2xl">
+            <FaPaw />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm text-gray-500 mb-1">Toplam İlan</h3>
+            <span className="text-2xl font-semibold text-gray-700">{userStats.totalAds}</span>
           </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-icon"><FiHeart /></div>
-          <div className="stat-content">
-            <h3>Aktif İlanlar</h3>
-            <span className="stat-value">{userStats.activeAds}</span>
+        <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-sm hover:translate-y-[-2px] hover:shadow-md transition-all">
+          <div className="w-12 h-12 rounded-full bg-purple-500 text-white flex items-center justify-center text-2xl">
+            <FiHeart />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm text-gray-500 mb-1">Aktif İlanlar</h3>
+            <span className="text-2xl font-semibold text-gray-700">{userStats.activeAds}</span>
           </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-icon"><FiEye /></div>
-          <div className="stat-content">
-            <h3>Görüntülenme</h3>
-            <span className="stat-value">{userStats.views}</span>
+        <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-sm hover:translate-y-[-2px] hover:shadow-md transition-all">
+          <div className="w-12 h-12 rounded-full bg-purple-500 text-white flex items-center justify-center text-2xl">
+            <FiEye />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm text-gray-500 mb-1">Görüntülenme</h3>
+            <span className="text-2xl font-semibold text-gray-700">{userStats.views}</span>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="main-container">
+      <div className="flex gap-6 relative mt-6">
         {/* Sidebar */}
-        <div className="sidebar">
-          <h3>Menü</h3>
-          <ul className="sidebar-menu">
+        <div className="w-60 bg-white rounded-xl p-5 shadow-sm sticky top-5 h-fit flex flex-col self-start">
+          <h3 className="text-base text-gray-700 mb-5 pb-2 border-b border-gray-200 relative">
+            Menü
+            <span className="absolute bottom-[-1px] left-0 w-10 h-[3px] bg-purple-600 rounded-sm"></span>
+          </h3>
+          <ul className="list-none p-0 m-0 mb-5">
             <li 
-              className={activeTab === 'pets' ? 'active' : ''} 
+              className={`flex items-center gap-2 py-3 px-4 mb-2 rounded-lg cursor-pointer transition-all font-medium ${activeTab === 'pets' ? 'bg-purple-600 text-white' : 'hover:bg-gray-100'}`}
               onClick={() => setActiveTab('pets')}
             >
               <FaPaw /> Evcil Hayvanlarım
             </li>
             <li 
-              className={activeTab === 'ads' ? 'active' : ''} 
+              className={`flex items-center gap-2 py-3 px-4 mb-2 rounded-lg cursor-pointer transition-all font-medium ${activeTab === 'ads' ? 'bg-purple-600 text-white' : 'hover:bg-gray-100'}`}
               onClick={() => setActiveTab('ads')}
             >
               <FiFileText /> İlanlarım
             </li>
             <li 
-              className={activeTab === 'messages' ? 'active' : ''} 
+              className={`flex items-center gap-2 py-3 px-4 mb-2 rounded-lg cursor-pointer transition-all font-medium ${activeTab === 'messages' ? 'bg-purple-600 text-white' : 'hover:bg-gray-100'}`}
               onClick={() => setActiveTab('messages')}
             >
               <FiMessageCircle /> Mesajlarım
             </li>
             <li 
-              className={activeTab === 'notifications' ? 'active' : ''} 
+              className={`flex items-center gap-2 py-3 px-4 mb-2 rounded-lg cursor-pointer transition-all font-medium ${activeTab === 'notifications' ? 'bg-purple-600 text-white' : 'hover:bg-gray-100'}`}
               onClick={() => setActiveTab('notifications')}
             >
               <FiBell /> Bildirimlerim
             </li>
           </ul>
           
-          <div className="sidebar-footer">
-            <button className="btn btn-add sidebar-add-btn">
+          <div className="mt-auto pt-5 border-t border-gray-200">
+            <button className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
               <FiPlus /> Yeni İlan Ekle
             </button>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="content-area">
+        <div className="flex-1 bg-white rounded-xl p-6 shadow-sm min-h-[600px]">
           {activeTab === 'pets' && (
-            <div className="pets-content">
-              <div className="section-header">
-                <h2>Evcil Hayvanlarım</h2>
-                <button className="btn btn-add">
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl text-gray-700 m-0">Evcil Hayvanlarım</h2>
+                <button className="flex items-center gap-2 py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                   <FiPlus /> Yeni Evcil Hayvan Ekle
                 </button>
               </div>
               
-              <div className="pets-grid">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {pets.map(pet => (
-                  <div className="pet-card" key={pet.id}>
-                    <div className="pet-image">
-                      <img src={pet.imageUrl} alt={pet.name} />
+                  <div className="bg-white rounded-xl overflow-hidden shadow-sm transition-all hover:translate-y-[-2px] hover:shadow-md border border-gray-200" key={pet.id}>
+                    <div className="h-40 overflow-hidden">
+                      <img src={pet.imageUrl} alt={pet.name} className="w-full h-full object-cover" />
                     </div>
-                    <div className="pet-info">
-                      <h3>{pet.name}</h3>
-                      <p>{pet.type} • {pet.breed}</p>
-                      <p>{pet.age} yaşında</p>
+                    <div className="p-4">
+                      <h3 className="text-lg text-gray-700 m-0 mb-2">{pet.name}</h3>
+                      <p className="text-sm text-gray-500 m-0 mb-1">{pet.type} • {pet.breed}</p>
+                      <p className="text-sm text-gray-500 m-0">{pet.age} yaşında</p>
                     </div>
-                    <div className="pet-actions">
-                      <button className="btn-icon">
+                    <div className="px-4 pb-4 flex justify-end">
+                      <button className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-500 border-none cursor-pointer transition-all hover:bg-purple-500 hover:text-white">
                         <FiEdit2 />
                       </button>
                     </div>
                   </div>
                 ))}
                 
-                <div className="pet-card add-pet">
-                  <div className="add-pet-content">
-                    <div className="add-icon-container">
+                <div className="border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer bg-gray-50 min-h-[240px] rounded-xl hover:border-purple-600">
+                  <div className="flex flex-col items-center gap-3 text-gray-500">
+                    <div>
                       <FiPlus size={32} />
                     </div>
                     <p>Yeni Evcil Hayvan Ekle</p>
@@ -353,32 +364,32 @@ const ProfilePage: React.FC = () => {
           )}
 
           {activeTab === 'ads' && (
-            <div className="ads-section">
-              <div className="ads-header">
-                <h2>İlanlarım</h2>
-                <button className="btn-primary">
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl text-gray-700 m-0">İlanlarım</h2>
+                <button className="flex items-center gap-2 py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                   <FiPlus size={18} /> Yeni İlan Ekle
                 </button>
               </div>
               
-              <div className="filter-container">
-                <div className="filter-group">
-                  <h4>Kategori</h4>
-                  <div className="ads-filter">
+              <div className="mb-6">
+                <div className="mb-4">
+                  <h4 className="text-sm text-gray-500 m-0 mb-2 font-medium">Kategori</h4>
+                  <div className="flex gap-3 flex-wrap">
                     <button 
-                      className={`filter-btn ${adsFilter.category === 'all' ? 'active' : ''}`}
+                      className={`py-2 px-4 rounded-full text-sm ${adsFilter.category === 'all' ? 'bg-purple-600 text-white' : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'}`}
                       onClick={() => setAdsFilter({ ...adsFilter, category: 'all' })}
                     >
                       Tüm Kategoriler
                     </button>
                     <button 
-                      className={`filter-btn ${adsFilter.category === 'sahiplendirme' ? 'active' : ''}`}
+                      className={`py-2 px-4 rounded-full text-sm ${adsFilter.category === 'sahiplendirme' ? 'bg-purple-600 text-white' : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'}`}
                       onClick={() => setAdsFilter({ ...adsFilter, category: 'sahiplendirme' })}
                     >
                       Sahiplendirme
                     </button>
                     <button 
-                      className={`filter-btn ${adsFilter.category === 'kayıp' ? 'active' : ''}`}
+                      className={`py-2 px-4 rounded-full text-sm ${adsFilter.category === 'kayıp' ? 'bg-purple-600 text-white' : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'}`}
                       onClick={() => setAdsFilter({ ...adsFilter, category: 'kayıp' })}
                     >
                       Kayıp İlanları
@@ -387,64 +398,64 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
               
-              <div className="ads-grid">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {filteredAds.length > 0 ? (
                   <>
                     {filteredAds.map(ad => (
-                      <div key={ad.id} className="ad-card">
-                        <img src={ad.imageUrl} alt={ad.title} className="ad-image" />
-                        <div className="ad-content">
-                          <div className="ad-category-badge" data-category={ad.category}>
+                      <div key={ad.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                        <img src={ad.imageUrl} alt={ad.title} className="w-full h-40 object-cover" />
+                        <div className="p-4">
+                          <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-2 ${ad.category === 'sahiplendirme' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                             {ad.category === 'sahiplendirme' ? 'Sahiplendirme' : 'Kayıp İlanı'}
                           </div>
-                          <h3 className="ad-title">{ad.title}</h3>
-                          <div className="ad-info">
-                            <div className="ad-info-item">
+                          <h3 className="text-lg font-medium text-gray-800 mb-2">{ad.title}</h3>
+                          <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
+                            <div className="flex items-center gap-1">
                               <FiMapPin size={16} />
                               {ad.location}
                             </div>
-                            <div className="ad-info-item">
+                            <div className="flex items-center gap-1">
                               <FiTag size={16} />
                               {ad.petType}
                             </div>
-                            <div className="ad-info-item">
+                            <div className="flex items-center gap-1">
                               <FiCalendar size={16} />
                               {ad.date}
                             </div>
                           </div>
-                          <p className="ad-description">{ad.description}</p>
-                          <div className="ad-footer">
-                            <div className="ad-edit-btn">
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{ad.description}</p>
+                          <div className="flex justify-end">
+                            <button className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-500 hover:bg-purple-500 hover:text-white transition-colors">
                               <FiEdit2 size={18} />
-                            </div>
+                            </button>
                           </div>
                         </div>
                       </div>
                     ))}
                     
-                    <div className="add-ad-card">
-                      <div className="add-ad-icon">
+                    <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all">
+                      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
                         <FiPlus size={24} />
                       </div>
-                      <span className="add-ad-text">Yeni İlan Ekle</span>
-                      <div className="add-ad-categories">
-                        <button className="add-category-btn">
+                      <span className="text-gray-600 font-medium">Yeni İlan Ekle</span>
+                      <div className="flex flex-col gap-2 w-full mt-2">
+                        <button className="w-full py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                           <span>Sahiplendirme İlanı</span>
                         </button>
-                        <button className="add-category-btn">
+                        <button className="w-full py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                           <span>Kayıp İlanı</span>
                         </button>
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="empty-state">
-                    <div className="empty-icon">
+                  <div className="col-span-3 flex flex-col items-center justify-center py-12 text-center">
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
                       <FiFileText size={32} />
                     </div>
-                    <h3>Henüz İlanınız Bulunmuyor</h3>
-                    <p>İlk ilanınızı eklemek için "Yeni İlan Ekle" butonuna tıklayın.</p>
-                    <button className="btn-primary">
+                    <h3 className="text-lg font-medium text-gray-700 mb-2">Henüz İlanınız Bulunmuyor</h3>
+                    <p className="text-gray-500 mb-4">İlk ilanınızı eklemek için "Yeni İlan Ekle" butonuna tıklayın.</p>
+                    <button className="flex items-center gap-2 py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                       <FiPlus size={18} /> Yeni İlan Ekle
                     </button>
                   </div>
@@ -454,25 +465,25 @@ const ProfilePage: React.FC = () => {
           )}
 
           {activeTab === 'messages' && (
-            <div className="messages-content">
-              <h2>Mesajlarım</h2>
-              <div className="empty-state">
-                <div className="empty-icon-container">
+            <div>
+              <h2 className="text-xl text-gray-700 m-0 mb-6">Mesajlarım</h2>
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
                   <FiMessageCircle size={48} />
                 </div>
-                <p>Henüz mesajınız bulunmamaktadır.</p>
+                <p className="text-gray-500">Henüz mesajınız bulunmamaktadır.</p>
               </div>
             </div>
           )}
 
           {activeTab === 'notifications' && (
-            <div className="notifications-content">
-              <h2>Bildirimlerim</h2>
-              <div className="empty-state">
-                <div className="empty-icon-container">
+            <div>
+              <h2 className="text-xl text-gray-700 m-0 mb-6">Bildirimlerim</h2>
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
                   <FiBell size={48} />
                 </div>
-                <p>Henüz bildiriminiz bulunmamaktadır.</p>
+                <p className="text-gray-500">Henüz bildiriminiz bulunmamaktadır.</p>
               </div>
             </div>
           )}
@@ -480,15 +491,15 @@ const ProfilePage: React.FC = () => {
       </div>
       
       {/* Footer */}
-      <div className="profile-footer">
-        <div className="footer-links">
-          <a href="#" className="footer-link">Hakkımızda</a>
-          <a href="#" className="footer-link">Gizlilik Politikası</a>
-          <a href="#" className="footer-link">Kullanım Koşulları</a>
-          <a href="#" className="footer-link">Yardım</a>
-          <a href="#" className="footer-link">İletişim</a>
+      <div className="mt-12 pt-6 border-t border-gray-200">
+        <div className="flex flex-wrap gap-4 justify-center mb-3">
+          <a href="#" className="text-gray-500 hover:text-purple-600 transition-colors">Hakkımızda</a>
+          <a href="#" className="text-gray-500 hover:text-purple-600 transition-colors">Gizlilik Politikası</a>
+          <a href="#" className="text-gray-500 hover:text-purple-600 transition-colors">Kullanım Koşulları</a>
+          <a href="#" className="text-gray-500 hover:text-purple-600 transition-colors">Yardım</a>
+          <a href="#" className="text-gray-500 hover:text-purple-600 transition-colors">İletişim</a>
         </div>
-        <div className="footer-copyright">
+        <div className="text-center text-gray-500 text-sm">
           © {new Date().getFullYear()} SocialPet. Tüm hakları saklıdır.
         </div>
       </div>

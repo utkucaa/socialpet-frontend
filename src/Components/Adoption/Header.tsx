@@ -4,15 +4,6 @@ import "./Header.css";
 const Header: React.FC = () => {
   return (
     <header className="header">
-      <nav className="nav">
-        <ul>
-          <li>•Barınaklara Bağış</li>
-          <li>•Veteriner Klinikleri</li>
-          <li>•PetShop</li>
-          <li>•Yardım ve Bilgi</li>
-          <li>•Fotoğraf Yarışması</li>
-        </ul>
-      </nav>
 
       <img src="/sahiplen.jpg" alt="Sahiplen Arka Plan" className="header-image" />
       <div className="header-content">

@@ -291,7 +291,7 @@ const PetHealthNew: React.FC = () => {
             
             {loading ? (
               <div className="flex justify-center items-center py-6">
-                <Loader className="animate-spin h-6 w-6 text-indigo-600 mr-2" />
+                <Loader className="animate-spin h-6 w-6 text-purple-600 mr-2" />
                 <span className="text-gray-600">Kullanıcılar yükleniyor...</span>
               </div>
             ) : (

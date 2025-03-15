@@ -134,7 +134,7 @@ const PetHealthList: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader className="animate-spin h-8 w-8 text-indigo-600" />
+        <Loader className="animate-spin h-8 w-8 text-purple-600" />
         <span className="ml-2 text-gray-600">Yükleniyor...</span>
       </div>
     );
@@ -298,7 +298,7 @@ const PetHealthList: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">
-                      <button className="p-1 text-indigo-600 hover:text-indigo-900" title="Görüntüle">
+                      <button className="p-1 text-purple-600 hover:text-indigo-900" title="Görüntüle">
                         <Eye size={18} />
                       </button>
                       <Link to={`/admin/pet-health/edit/${record.id}`} className="p-1 text-blue-600 hover:text-blue-900" title="Düzenle">

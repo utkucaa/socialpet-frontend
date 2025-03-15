@@ -11,12 +11,13 @@
 }
 
 .breadcrumb a {
-  color: #666;
+  color: #7e57c2;
   text-decoration: none;
 }
 
 .breadcrumb a:hover {
   text-decoration: underline;
+  color: #5e35b1;
 }
 
 .ad-header {
@@ -42,7 +43,7 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: #ede7f6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,7 +52,7 @@
 
 .share-icon:hover {
   transform: translateY(-2px);
-  background-color: #e0e0e0;
+  background-color: #d1c4e9;
 }
 
 .social-icon {
@@ -80,6 +81,9 @@
   height: 400px;
   background: #f5f5f5;
   margin-bottom: 10px;
+  border: 1px solid #d1c4e9;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .main-image img {
@@ -92,12 +96,13 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(94, 53, 177, 0.7);
   color: white;
   border: none;
   padding: 15px;
   cursor: pointer;
   font-size: 24px;
+  border-radius: 50%;
 }
 
 .nav-btn.prev { left: 10px; }
@@ -113,6 +118,8 @@
 .specifications {
   background: white;
   padding: 20px;
+  border: 1px solid #d1c4e9;
+  border-radius: 8px;
 }
 
 .location-info {
@@ -128,12 +135,13 @@
 
 .specs-table td {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ede7f6;
 }
 
 .specs-table td:first-child {
-  color: #666;
+  color: #5e35b1;
   width: 40%;
+  font-weight: 600;
 }
 
 .ad-stats {
@@ -143,9 +151,10 @@
 
 /* Contact Box Styles */
 .contact-box {
-  background: #f8f8f8;
+  background: #f5f5f5;
   padding: 20px;
   border-radius: 8px;
+  border: 1px solid #d1c4e9;
 }
 
 .user-info {
@@ -154,7 +163,7 @@
 
 .user-info h3 {
   margin: 0;
-  color: #333;
+  color: #5e35b1;
 }
 
 .contact-buttons {
@@ -174,11 +183,17 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  transition: background-color 0.3s ease;
 }
 
 .phone-btn {
   background: white;
-  border: 1px solid #ddd !important;
+  border: 1px solid #d1c4e9 !important;
+  color: #5e35b1;
+}
+
+.phone-btn:hover {
+  background-color: #ede7f6;
 }
 
 .whatsapp-btn {
@@ -187,8 +202,13 @@
 }
 
 .message-btn {
-  background: white;
-  border: 1px solid #ddd !important;
+  background: #7e57c2;
+  color: white;
+  border: none !important;
+}
+
+.message-btn:hover {
+  background: #5e35b1;
 }
 
 .warning-box {

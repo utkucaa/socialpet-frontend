@@ -2,14 +2,14 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    background-color: #f1f1f1; /* Açık gri */
+    background-color: #f5f5f5; /* Açık gri */
     padding: 10px 0;
     gap: 50px;
   }
 
   .category-text {
     font-size: 1.2rem;  /* Yazı boyutunu büyüttük */
-    color: #918d8d;
+    color: #666;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -17,26 +17,30 @@
     transition: color 0.3s ease;
   }
   
+  .category-text:hover {
+    color: #5e35b1;
+  }
   
   .category-bar button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #fad395;
-    color:#918d8d;
+    background-color: #ede7f6;
+    color: #5e35b1;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   
   .category-bar button:hover {
-    background-color: #eec88c; 
+    background-color: #d1c4e9; 
   }
   
   .lost-button {
-    background-color: #FF5722; 
+    background-color: #7e57c2; 
+    color: white !important;
   }
   
   .lost-button:hover {
-    background-color: #e64a19; 
+    background-color: #5e35b1; 
   }

@@ -31,20 +31,20 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
           </div>
 
           <div className="hidden md:flex md:items-center md:space-x-3 whitespace-nowrap flex-grow">
-            <Link to="/" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Ana Sayfa</Link>
-            <Link to="/adopt" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Sahiplen</Link>
-            <Link to="/vet-pet-shop" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Veteriner & Petshop</Link>
-            <Link to="/lost" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Kayıp</Link>
-            <Link to="/health-tracking" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Sağlık Takibi</Link>
-            <Link to="/breed-detector" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Cins Dedektifi</Link>
-            <Link to="/help-info" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Yardım ve Bilgi</Link>
-            <Link to="/donate" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Bağış Yap</Link>
+            <Link to="/" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Ana Sayfa</Link>
+            <Link to="/adopt" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Sahiplen</Link>
+            <Link to="/vet-pet-shop" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Veteriner & Petshop</Link>
+            <Link to="/lost" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Kayıp</Link>
+            <Link to="/health-tracking" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Sağlık Takibi</Link>
+            <Link to="/breed-detector" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Cins Dedektifi</Link>
+            <Link to="/help-info" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Yardım ve Bilgi</Link>
+            <Link to="/donate" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Bağış Yap</Link>
           </div>
           
           <div className="flex items-center md:hidden ml-auto">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600 hover:bg-gray-100 focus:outline-none transition-colors duration-200"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-gray-100 focus:outline-none transition-colors duration-200"
             >
               <svg
                 className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`}
@@ -70,15 +70,15 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
           <div className="hidden md:flex md:items-center ml-auto">
             {!user ? (
               <>
-                <Link to="/login" className="text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Giriş / Kayıt Ol</Link>
-                <Link to="/create-ad" className="bg-orange-500 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-orange-600 transition-colors duration-200 shadow-md ml-2">
+                <Link to="/login" className="text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">Giriş / Kayıt Ol</Link>
+                <Link to="/create-ad" className="bg-purple-600 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-purple-700 transition-colors duration-200 shadow-md ml-2">
                   Hemen İlan Ver
                 </Link>
               </>
             ) : (
               <>
                 <div className="relative group">
-                  <Link to="/profile" className="flex items-center text-gray-700 hover:text-indigo-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                  <Link to="/profile" className="flex items-center text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                     {user.name || 'Profil'}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -95,7 +95,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
                     </button>
                   </div>
                 </div>
-                <Link to="/create-ad" className="bg-orange-500 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-orange-600 transition-colors duration-200 shadow-md ml-2">
+                <Link to="/create-ad" className="bg-purple-600 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-purple-700 transition-colors duration-200 shadow-md ml-2">
                   Hemen İlan Ver
                 </Link>
               </>
@@ -106,27 +106,27 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
 
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden shadow-lg border-t`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
-          <Link to="/" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Ana Sayfa</Link>
-          <Link to="/adopt" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Sahiplen</Link>
-          <Link to="/vet-pet-shop" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Veteriner & Petshop</Link>
-          <Link to="/lost" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Kayıp</Link>
-          <Link to="/health-tracking" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Sağlık Takibi</Link>
-          <Link to="/breed-detector" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Cins Dedektifi</Link>
-          <Link to="/help-info" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Yardım ve Bilgi</Link>
-          <Link to="/donate" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Bağış Yap</Link>
+          <Link to="/" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Ana Sayfa</Link>
+          <Link to="/adopt" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Sahiplen</Link>
+          <Link to="/vet-pet-shop" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Veteriner & Petshop</Link>
+          <Link to="/lost" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Kayıp</Link>
+          <Link to="/health-tracking" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Sağlık Takibi</Link>
+          <Link to="/breed-detector" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Cins Dedektifi</Link>
+          <Link to="/help-info" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Yardım ve Bilgi</Link>
+          <Link to="/donate" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Bağış Yap</Link>
           
           {!user ? (
             <>
-              <Link to="/login" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Giriş / Kayıt Ol</Link>
-              <Link to="/create-ad" className="block bg-orange-500 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-orange-600 transition-colors duration-200 mt-2 shadow-md">
+              <Link to="/login" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Giriş / Kayıt Ol</Link>
+              <Link to="/create-ad" className="block bg-purple-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-purple-700 transition-colors duration-200 mt-2 shadow-md">
                 Hemen İlan Ver
               </Link>
             </>
           ) : (
             <>
-              <Link to="/profile" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Profilim</Link>
-              <Link to="/my-ads" className="block text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">İlanlarım</Link>
-              <Link to="/create-ad" className="block bg-orange-500 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-orange-600 transition-colors duration-200 mt-2 shadow-md">
+              <Link to="/profile" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Profilim</Link>
+              <Link to="/my-ads" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">İlanlarım</Link>
+              <Link to="/create-ad" className="block bg-purple-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-purple-700 transition-colors duration-200 mt-2 shadow-md">
                 Hemen İlan Ver
               </Link>
               <button

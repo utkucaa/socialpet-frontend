@@ -11,18 +11,27 @@
   
   .breadcrumb span {
     cursor: pointer;
+    color: #7e57c2;
+    transition: color 0.3s ease;
+  }
+  
+  .breadcrumb span:hover {
+    color: #5e35b1;
+    text-decoration: underline;
   }
   
   .answer-form {
     background: #fff;
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(126, 87, 194, 0.1);
+    border: 1px solid #ede7f6;
   }
   
   .answer-form h2 {
     margin-bottom: 30px;
-    color: #333;
+    color: #5e35b1;
+    font-weight: 600;
   }
   
   .form-group {
@@ -33,7 +42,7 @@
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
-    color: #444;
+    color: #5e35b1;
   }
   
   .form-group select,
@@ -41,43 +50,59 @@
   .form-group textarea {
     width: 50%; /* Yüzde 50 genişlik */
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #d1c4e9;
+    border-radius: 8px;
     font-size: 14px;
     max-width: 800px;
     margin-left: 0; /* Sola hizalamak için */
     display: block; /* Blok eleman olarak hizalanır */
+    background-color: #f5f5f5;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .form-group select:focus,
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #7e57c2;
+    box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.2);
   }
   
   .editor-toolbar {
-  display: flex;
-  gap: 5px;
-  margin-left: 0; /* Sola hizalamak için */
-  margin-bottom: 10px;
-  padding: 5px;
-  background: #f5f5f5;
-  border-radius: 4px;
-  width: 50%; /* Yüzde 50 genişlik, form elemanlarıyla uyumlu */
-  max-width: 800px; /* Maksimum genişlik */
-  display: block; /* Blok eleman olarak hizalanır */
+    display: flex;
+    gap: 5px;
+    margin-left: 0; /* Sola hizalamak için */
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #ede7f6;
+    border-radius: 8px;
+    width: 50%; /* Yüzde 50 genişlik, form elemanlarıyla uyumlu */
+    max-width: 800px; /* Maksimum genişlik */
+    display: block; /* Blok eleman olarak hizalanır */
   }
   
   .editor-toolbar button {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border: none;
     background: none;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 4px;
+    color: #5e35b1;
+    transition: background-color 0.3s ease;
   }
   
   .editor-toolbar button:hover {
-    background: #e0e0e0;
+    background: #d1c4e9;
   }
   
   .preview-btn {
     margin-left: auto;
-    background: #054483 !important;
-    color: white;
+    background: #7e57c2 !important;
+    color: white !important;
+  }
+  
+  .preview-btn:hover {
+    background: #5e35b1 !important;
   }
   
   .form-actions {
@@ -89,26 +114,37 @@
   .upload-btn,
   .survey-btn {
     padding: 10px 15px;
-    border: 1px solid #054483;
-    color: #054483;
+    border: 1px solid #7e57c2;
+    color: #7e57c2;
     background: white;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-btn:hover,
+  .survey-btn:hover {
+    background: #ede7f6;
+    transform: translateY(-2px);
   }
   
   .submit-btn {
     width: 150px;
     padding: 12px;
-    background: #054483;
+    background: #7e57c2;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(126, 87, 194, 0.2);
   }
   
   .submit-btn:hover {
-    background: #0056b3;
+    background: #5e35b1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(126, 87, 194, 0.3);
   }
   
   @media (max-width: 768px) {
@@ -118,6 +154,13 @@
     
     .upload-btn,
     .survey-btn {
+      width: 100%;
+    }
+    
+    .form-group select,
+    .form-group input,
+    .form-group textarea,
+    .editor-toolbar {
       width: 100%;
     }
   }

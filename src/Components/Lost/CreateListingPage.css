@@ -8,6 +8,7 @@
 .baslık{
   font-size: 28px;
   margin-bottom: 29px;
+  color: #5e35b1;
 }
 
 .create-listing-container {
@@ -29,7 +30,7 @@
 
 h2, h3 {
   margin-bottom: 9px;
-  color: #333;
+  color: #5e35b1;
   font-size: 18px;
 }
 
@@ -38,18 +39,17 @@ h2, h3 {
 .form-textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #d1c4e9;
   border-radius: 4px;
   font-size: 16px;
   margin-bottom: 10px;
+  background-color: #f5f5f5;
 }
 
 .form-textarea {
   min-height: 150px;
   resize: vertical;
 }
-
-
 
 .warning-text {
   color: #d32f2f;
@@ -72,11 +72,12 @@ h2, h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #d1c4e9;
 }
 
 /* Sağ bölüm stilleri */
 .image-upload-container {
-  border: 2px dashed #ddd;
+  border: 2px dashed #d1c4e9;
   border-radius: 4px;
   padding: 20px;
   text-align: center;
@@ -93,7 +94,7 @@ h2, h3 {
 }
 
 .upload-placeholder {
-  color: #1976d2;
+  color: #7e57c2;
   font-size: 18px;
   padding: 60px 0;
 }
@@ -123,21 +124,25 @@ h2, h3 {
   font-size: 16px;
   cursor: pointer;
   margin-bottom: 10px;
+  transition: background-color 0.3s ease;
 }
 
 .publish-button {
-  background-color: #5d9d5f;
+  background-color: #7e57c2;
   color: white;
 }
 
 .delete-button {
-  background-color: #d9473d;
+  background-color: #d32f2f;
   color: white;
 }
 
-.publish-button:hover,
+.publish-button:hover {
+  background-color: #5e35b1;
+}
+
 .delete-button:hover {
-  opacity: 0.9;
+  background-color: #b71c1c;
 }
 
 .terms-text {
@@ -148,6 +153,11 @@ h2, h3 {
 }
 
 .terms-text a {
-  color: #1976d2;
+  color: #7e57c2;
   text-decoration: none;
+}
+
+.terms-text a:hover {
+  color: #5e35b1;
+  text-decoration: underline;
 }

@@ -231,7 +231,7 @@ const AdPending = () => {
         return 'bg-red-100 text-red-800';
       case 'yüksek':
       case 'yuksek':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-purple-100 text-purple-800';
       case 'normal':
         return 'bg-blue-100 text-blue-800';
       default:

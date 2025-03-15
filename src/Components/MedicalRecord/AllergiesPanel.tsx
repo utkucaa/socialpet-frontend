@@ -163,7 +163,7 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ petId }) => {
       case 'mild':
         return 'bg-yellow-100 text-yellow-800';
       case 'moderate':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-purple-100 text-purple-800';
       case 'severe':
       case 'ciddi':
         return 'bg-red-100 text-red-800';
@@ -185,7 +185,7 @@ export const AllergiesPanel: React.FC<AllergiesPanelProps> = ({ petId }) => {
             setNotes('');
             setShowModal(true);
           }}
-          className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
         >
           <Plus size={16} className="mr-2" />
           Alerji Ekle
