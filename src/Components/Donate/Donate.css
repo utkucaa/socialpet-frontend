@@ -22,6 +22,20 @@
     left: 0;
     right: 0;
     bottom: 0;
+    background-image: url('/public/paw.png');
+    background-size: 800px auto;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: floatingHearts 20s linear infinite;
+    mix-blend-mode: screen;
+  }
+  .hero-section.hero2::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-image: url('/public/heart-pattern.png');
     background-size: 800px auto;
     opacity: 0.4;
@@ -78,9 +92,9 @@
   .title-box {
     margin-bottom: 10px;
   }
-  
+
   .title-box h1 {
-    background-color: rgba(231, 84, 128, 0.8);
+    background-color: rgba(183, 117, 237, 0.8);
     color: white;
     padding: 10px 30px;
     font-size: 2.5rem;

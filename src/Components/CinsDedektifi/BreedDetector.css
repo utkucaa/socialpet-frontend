@@ -5,6 +5,15 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
   overflow: hidden;
+  --primary-color: #6200ea;
+  --primary-rgb: 98, 0, 234;
+  --secondary-color: #03dac6;
+  --secondary-rgb: 3, 218, 198;
+  --error-color: #cf6679;
+  --background-color: #f8f9fa;
+  --card-background: white;
+  --text-color: #333;
+  --border-color: #e6e6e6;
 }
 
 /* Header Styles */
@@ -585,4 +594,101 @@
   bottom: 5%;
   left: 50%;
   transform: rotate(10deg);
+}
+
+/* Add the animal type tabs styles */
+.animal-type-tabs {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.tab-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: 2px solid #e6e6e6;
+  border-radius: 50px;
+  background-color: white;
+  color: #666;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.tab-button:hover {
+  border-color: #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tab-button.active {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.tab-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.tab-button.active .tab-icon {
+  color: var(--primary-color);
+}
+
+/* Add styles for confidence bar */
+.confidence-bar-container {
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+  position: relative;
+}
+
+.confidence-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  border-radius: 10px;
+  transition: width 0.8s ease-in-out;
+}
+
+.confidence-text {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333;
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.analysis-method {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.method-label {
+  font-weight: 600;
+  color: #666;
+  margin-right: 10px;
+}
+
+.method-value {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
 } 

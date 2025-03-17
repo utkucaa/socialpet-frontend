@@ -56,7 +56,7 @@ const Donate: React.FC = () => {
   return (
     <div className="main-container">
       {/* Üst Kısım - Resimli Alan */}
-      <div className="hero-section">
+      <div className="hero-section hero2">
         
         <div className="hero-content">
           <div className="title-box">
