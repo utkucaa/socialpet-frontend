@@ -373,6 +373,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
+  color: #fff;
 }
 
 .result-icon {
@@ -436,7 +437,7 @@
 .dog-silhouette {
   width: 150px;
   height: 150px;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' fill='%238b5cf6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M496,128c0-8.8-7.2-16-16-16h-48V96c0-8.8-7.2-16-16-16H384c-8.8,0-16,7.2-16,16v16H144V96c0-8.8-7.2-16-16-16H96c-8.8,0-16,7.2-16,16v16H32c-8.8,0-16,7.2-16,16v64c0,8.8,7.2,16,16,16h32c0,123.7,100.3,224,224,224s224-100.3,224-224h32c8.8,0,16-7.2,16-16V128z M192,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,368,192,368z M192,320c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,320,192,320z M288,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S296.8,368,288,368z M288,320c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S296.8,320,288,320z M400,256c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S408.8,256,400,256z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='800px' height='800px' viewBox='0 0 16 16' fill='%238b5cf6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 4V7C16 9.20914 14.2091 11 12 11H10V15H0V13L0.931622 10.8706C1.25226 10.9549 1.59036 11 1.94124 11C3.74931 11 5.32536 9.76947 5.76388 8.01538L3.82359 7.53031C3.60766 8.39406 2.83158 9.00001 1.94124 9.00001C1.87789 9.00001 1.81539 8.99702 1.75385 8.99119C1.02587 8.92223 0.432187 8.45551 0.160283 7.83121C0.0791432 7.64491 0.0266588 7.44457 0.00781272 7.23658C-0.0112323 7.02639 0.00407892 6.80838 0.0588889 6.58914C0.0588882 6.58914 0.0588896 6.58913 0.0588889 6.58914L0.698705 4.02986C1.14387 2.24919 2.7438 1 4.57928 1H10L12 4H16ZM9 6C9.55229 6 10 5.55228 10 5C10 4.44772 9.55229 4 9 4C8.44771 4 8 4.44772 8 5C8 5.55228 8.44771 6 9 6Z'/%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -691,4 +692,55 @@
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+}
+
+.model-status {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.status-indicator {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-indicator.not_loaded {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.status-indicator.loading {
+  background-color: #e8f4fd;
+  color: #0078d4;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.loaded {
+  background-color: #e6f7e6;
+  color: #107c10;
+}
+
+.status-indicator.fallback {
+  background-color: #fff4ce;
+  color: #865200;
+}
+
+.status-indicator.failed {
+  background-color: #fde7e9;
+  color: #d13438;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 } 

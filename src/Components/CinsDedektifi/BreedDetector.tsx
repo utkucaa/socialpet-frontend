@@ -1,114 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './BreedDetector.css';
-import * as tf from '@tensorflow/tfjs';
-// Import TensorFlow backend for loading models
-import '@tensorflow/tfjs-converter';
-import { analyzeCatBreed, prepareImageForTensorflow } from '../../services/breedDetectionService';
-import { DOG_BREED_MODEL, loadModel, loadLabels, preprocessImage, predict } from '../../services/modelConverterService';
+import { analyzeCatBreed } from '../../services/breedDetectionService';
 
 const BreedDetector: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<{ type: string; breed: string; confidence?: number } | null>(null);
-  const [selectedTab, setSelectedTab] = useState<'kedi' | 'köpek'>('kedi');
-  const [model, setModel] = useState<tf.GraphModel | tf.LayersModel | null>(null);
-  const [modelType, setModelType] = useState<'tfjs' | 'h5'>('tfjs');
-  const [dogBreeds, setDogBreeds] = useState<string[]>([]);
+  const [selectedTab, setSelectedTab] = useState<'kedi' | 'köpek'>('kedi'); 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Load TensorFlow.js model for dog breed detection
-  useEffect(() => {
-    const loadDogBreedModel = async () => {
-      try {
-        console.log('Loading dog breed detection model and labels...');
-        
-        // Load the labels first
-        const breeds = await loadLabels(DOG_BREED_MODEL);
-        if (breeds && breeds.length > 0) {
-          setDogBreeds(breeds);
-          console.log(`Loaded ${breeds.length} dog breeds from labels file`);
-        } else {
-          console.error('Failed to load dog breeds list');
-        }
-        
-        // Try to disable debugging mode which causes performance issues
-        if (tf.ENV && typeof tf.ENV.set === 'function') {
-          try {
-            console.log('Setting TensorFlow.js debug mode to false for better performance');
-            tf.ENV.set('DEBUG', false);
-          } catch (e) {
-            console.warn('Could not disable TF debug mode:', e);
-          }
-        }
-        
-        // Always try to load the model, even in development mode
-        console.log('Loading model from:', DOG_BREED_MODEL.modelPath);
-        
-        try {
-          const loadedModel = await loadModel(DOG_BREED_MODEL);
-          if (loadedModel) {
-            setModel(loadedModel);
-            console.log('Dog breed model loaded successfully');
-            
-            // Determine the model type for reference
-            if ('predict' in loadedModel && typeof loadedModel.predict === 'function') {
-              if ('executeAsync' in loadedModel) {
-                console.log('Loaded model type: GraphModel (TensorFlow.js)');
-              } else {
-                console.log('Loaded model type: LayersModel (TensorFlow.js)');
-              }
-            }
-            
-            // Warm up the model with a dummy tensor
-            console.log('Warming up the model...');
-            try {
-              const dummyTensor = tf.zeros([1, 224, 224, 3]);
-              const warmupResult = await loadedModel.predict(dummyTensor);
-              
-              if (warmupResult instanceof tf.Tensor) {
-                warmupResult.dispose();
-              } else if (Array.isArray(warmupResult)) {
-                warmupResult.forEach(tensor => {
-                  if (tensor instanceof tf.Tensor) {
-                    tensor.dispose();
-                  }
-                });
-              }
-              
-              dummyTensor.dispose();
-              console.log('Model warm-up complete');
-            } catch (warmupError) {
-              console.warn('Model warm-up failed, but this may not affect functionality:', warmupError);
-            }
-          } else {
-            console.error('Model loading returned null');
-          }
-        } catch (modelError) {
-          console.error('Error loading TensorFlow.js model:', modelError);
-        }
-      } catch (error) {
-        console.error('Failed to load dog breed model:', error);
-      }
-    };
-    
-    loadDogBreedModel();
-    
-    // Cleanup function
-    return () => {
-      // Dispose of the model when component unmounts
-      if (model) {
-        try {
-          // Clean up model resources
-          if ('dispose' in model) {
-            model.dispose();
-          }
-        } catch (e) {
-          console.error('Error disposing model:', e);
-        }
-      }
-    };
-  }, []);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -147,83 +48,51 @@ const BreedDetector: React.FC = () => {
     }
   };
 
-  const analyzeImageWithOpenAI = async (imageUrl: string) => {
+  // Function to analyze dog breed using the API
+  const analyzeDogBreed = async (imageData: string): Promise<{ type: string; breed: string; confidence: number }> => {
     try {
-      setIsLoading(true);
+      // Convert base64 data URL to Blob
+      const base64Response = await fetch(imageData);
+      const blob = await base64Response.blob();
       
-      console.log('Analyzing cat image with real API service...');
-      return await analyzeCatBreed(imageUrl);
-    } catch (error) {
-      console.error('Error analyzing cat breed with OpenAI:', error);
-      return { 
-        type: 'Kedi', 
-        breed: 'Tanımlanamadı',
-        confidence: 0
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const analyzeImageWithTensorflow = async (imageUrl: string) => {
-    try {
-      setIsLoading(true);
+      // Create form data and append the image
+      const formData = new FormData();
+      formData.append('image', blob, 'dog-image.jpg');
       
-      if (!model) {
-        console.error('Model not loaded');
-        return {
-          type: 'Köpek',
-          breed: 'Model yüklenemedi - TensorFlow.js modelinizi kontrol edin',
-          confidence: 0
-        };
+      // Make API request
+      const response = await fetch('http://localhost:8080/api/v1/dog-breed-analyzer/analyze-dog', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Origin': window.location.origin
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('API yanıt vermedi');
       }
       
-      console.log('Starting dog breed analysis with model');
+      const data = await response.json();
       
-      // Create an image element from the base64 URL
-      const img = await prepareImageForTensorflow(imageUrl);
+      // Get Turkish breed name from JSON file
+      const breedNameResponse = await fetch('/breed_names_tr.json');
+      const breedNames = await breedNameResponse.json();
       
-      // Preprocess the image for the model
-      const tensor = preprocessImage(img, DOG_BREED_MODEL.inputShape);
+      // Use Turkish breed name if available, otherwise format the English name
+      const breedName = breedNames[data.primaryBreed] || 
+        data.primaryBreed
+          .split('_')
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
       
-      // Make prediction
-      const probabilities = await predict(model, tensor);
-      
-      if (probabilities.length === 0) {
-        throw new Error('Failed to get prediction results');
-      }
-      
-      // Get the index of the highest probability
-      const maxProbability = Math.max(...probabilities);
-      const breedIndex = probabilities.indexOf(maxProbability);
-      
-      // Instead of using the breeds.json mapping, directly show the index and confidence
-      const breed = `Tahmin #${breedIndex + 1}`;
-      
-      // Log detailed prediction data
-      console.log(`Prediction data - Index: ${breedIndex}, Confidence: ${maxProbability}`);
-      console.log(`Top 5 predictions:`, 
-        probabilities
-          .map((prob, idx) => ({ index: idx, probability: prob }))
-          .sort((a, b) => b.probability - a.probability)
-          .slice(0, 5)
-      );
-      
-      return { 
-        type: 'Köpek', 
-        breed: breed,
-        confidence: maxProbability * 100 // Convert to percentage
+      return {
+        type: 'Köpek',
+        breed: breedName,
+        confidence: data.confidence * 100
       };
     } catch (error) {
-      console.error('Error analyzing dog breed:', error);
-      
-      return { 
-        type: 'Köpek', 
-        breed: 'Analiz sırasında hata oluştu',
-        confidence: 0
-      };
-    } finally {
-      setIsLoading(false);
+      console.error('Dog breed API error:', error);
+      throw new Error('Köpek cinsi tespit edilemedi');
     }
   };
 
@@ -231,14 +100,13 @@ const BreedDetector: React.FC = () => {
     if (!selectedImage || isLoading) return;
     
     try {
+      setIsLoading(true);
       let detectionResult;
       
       if (selectedTab === 'kedi') {
         detectionResult = await analyzeCatBreed(selectedImage);
       } else {
-        setIsLoading(true);
-        detectionResult = await analyzeImageWithTensorflow(selectedImage);
-        setIsLoading(false);
+        detectionResult = await analyzeDogBreed(selectedImage);
       }
       
       setResult(detectionResult);
@@ -246,9 +114,10 @@ const BreedDetector: React.FC = () => {
       console.error('Error detecting breed:', error);
       setResult({ 
         type: selectedTab === 'kedi' ? 'Kedi' : 'Köpek', 
-        breed: 'Tanımlanamadı', 
+        breed: error instanceof Error ? error.message : 'Tanımlanamadı', 
         confidence: 0 
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -300,14 +169,10 @@ const BreedDetector: React.FC = () => {
           className={`tab-button ${selectedTab === 'köpek' ? 'active' : ''}`}
           onClick={() => setSelectedTab('köpek')}
         >
-          <svg viewBox="0 0 512 512" fill="currentColor" className="tab-icon">
-            <path d="M496,128c0-8.8-7.2-16-16-16h-48V96c0-8.8-7.2-16-16-16H384c-8.8,0-16,7.2-16,16v16H144V96c0-8.8-7.2-16-16-16H96
-              c-8.8,0-16,7.2-16,16v16H32c-8.8,0-16,7.2-16,16v64c0,8.8,7.2,16,16,16h32c0,123.7,100.3,224,224,224s224-100.3,224-224h32
-              c8.8,0,16-7.2,16-16V128z M192,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,368,192,368z M192,320
-              c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,320,192,320z M288,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16
-              S296.8,368,288,368z M288,320c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S296.8,320,288,320z M400,256
-              c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S408.8,256,400,256z"/>
-          </svg>
+         
+         <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className='tab-icon'>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16 4V7C16 9.20914 14.2091 11 12 11H10V15H0V13L0.931622 10.8706C1.25226 10.9549 1.59036 11 1.94124 11C3.74931 11 5.32536 9.76947 5.76388 8.01538L3.82359 7.53031C3.60766 8.39406 2.83158 9.00001 1.94124 9.00001C1.87789 9.00001 1.81539 8.99702 1.75385 8.99119C1.02587 8.92223 0.432187 8.45551 0.160283 7.83121C0.0791432 7.64491 0.0266588 7.44457 0.00781272 7.23658C-0.0112323 7.02639 0.00407892 6.80838 0.0588889 6.58914C0.0588882 6.58914 0.0588896 6.58913 0.0588889 6.58914L0.698705 4.02986C1.14387 2.24919 2.7438 1 4.57928 1H10L12 4H16ZM9 6C9.55229 6 10 5.55228 10 5C10 4.44772 9.55229 4 9 4C8.44771 4 8 4.44772 8 5C8 5.55228 8.44771 6 9 6Z" fill="currentColor"/>
+</svg>
           <span>Köpek</span>
         </button>
       </div>
@@ -323,7 +188,12 @@ const BreedDetector: React.FC = () => {
           >
             {selectedImage ? (
               <div className="preview-container">
-                <img src={selectedImage} alt="Preview" className="image-preview" />
+                <img 
+                  src={selectedImage} 
+                  alt="Preview" 
+                  className="image-preview"
+                  ref={imageRef}
+                />
                 <button className="remove-image" onClick={(e) => { e.stopPropagation(); handleReset(); }}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -341,14 +211,10 @@ const BreedDetector: React.FC = () => {
                     </div>
                   ) : (
                     <div className="upload-icon dog-icon">
-                      <svg viewBox="0 0 512 512" fill="currentColor">
-                        <path d="M496,128c0-8.8-7.2-16-16-16h-48V96c0-8.8-7.2-16-16-16H384c-8.8,0-16,7.2-16,16v16H144V96c0-8.8-7.2-16-16-16H96
-                          c-8.8,0-16,7.2-16,16v16H32c-8.8,0-16,7.2-16,16v64c0,8.8,7.2,16,16,16h32c0,123.7,100.3,224,224,224s224-100.3,224-224h32
-                          c8.8,0,16-7.2,16-16V128z M192,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,368,192,368z M192,320
-                          c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S200.8,320,192,320z M288,368c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16
-                          S296.8,368,288,368z M288,320c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S296.8,320,288,320z M400,256
-                          c-8.8,0-16-7.2-16-16s7.2-16,16-16s16,7.2,16,16S408.8,256,400,256z"/>
-                      </svg>
+                    
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16 4V7C16 9.20914 14.2091 11 12 11H10V15H0V13L0.931622 10.8706C1.25226 10.9549 1.59036 11 1.94124 11C3.74931 11 5.32536 9.76947 5.76388 8.01538L3.82359 7.53031C3.60766 8.39406 2.83158 9.00001 1.94124 9.00001C1.87789 9.00001 1.81539 8.99702 1.75385 8.99119C1.02587 8.92223 0.432187 8.45551 0.160283 7.83121C0.0791432 7.64491 0.0266588 7.44457 0.00781272 7.23658C-0.0112323 7.02639 0.00407892 6.80838 0.0588889 6.58914C0.0588882 6.58914 0.0588896 6.58913 0.0588889 6.58914L0.698705 4.02986C1.14387 2.24919 2.7438 1 4.57928 1H10L12 4H16ZM9 6C9.55229 6 10 5.55228 10 5C10 4.44772 9.55229 4 9 4C8.44771 4 8 4.44772 8 5C8 5.55228 8.44771 6 9 6Z" fill="currentColor"/>
+</svg>
                     </div>
                   )}
                 </div>
@@ -363,12 +229,6 @@ const BreedDetector: React.FC = () => {
                     : 'Köpek fotoğrafı yüklemek için tıklayın veya sürükleyin'
                   }
                 </p>
-                <span>
-                  {selectedTab === 'kedi' 
-                    ? 'OpenAI Vision ile analiz edilecektir' 
-                    : 'TensorFlow.js modeli ile analiz edilecektir'
-                  }
-                </span>
               </>
             )}
             <input 
@@ -454,21 +314,8 @@ const BreedDetector: React.FC = () => {
                 </div>
               </div>
               <div className="result-footer">
-                <p>Not: Bu sonuçlar 
-                  {selectedTab === 'kedi' 
-                    ? ' OpenAI Vision API' 
-                    : ' TensorFlow.js modeli'
-                  } tahminidir ve %100 doğru olmayabilir.
+                <p>Not: Bu sonuçlar Tensorflow Modeli tahminidir ve %100 doğru olmayabilir.
                 </p>
-                <div className="analysis-method">
-                  <span className="method-label">Analiz Metodu:</span>
-                  <span className="method-value">
-                    {selectedTab === 'kedi' 
-                      ? 'OpenAI Vision API' 
-                      : 'TensorFlow.js Custom Model'
-                    }
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -488,7 +335,7 @@ const BreedDetector: React.FC = () => {
           <p>
             {selectedTab === 'kedi' 
               ? 'Cins Dedektifi, OpenAI Vision API kullanarak kedi fotoğraflarından cinsi tespit eder. En iyi sonuç için net ve kedinin tüm vücudunun göründüğü fotoğraflar kullanın.' 
-              : 'Cins Dedektifi, TensorFlow.js modeli kullanarak köpek fotoğraflarından cinsi tespit eder. En iyi sonuç için net ve köpeğin tüm vücudunun göründüğü fotoğraflar kullanın.'
+              : 'Cins Dedektifi, API kullanarak köpek fotoğraflarından cinsi tespit eder. En iyi sonuç için net ve köpeğin tüm vücudunun göründüğü fotoğraflar kullanın.'
             }
           </p>
         </div>

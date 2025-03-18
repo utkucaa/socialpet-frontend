@@ -97,21 +97,3 @@ export const analyzeCatBreed = async (imageData: string): Promise<BreedDetection
     };
   }
 };
-
-/**
- * Prepares an image for TensorFlow.js model inference
- * This function is called client-side
- * @param imageData Base64 image data
- * @returns Image element for TensorFlow processing
- */
-export const prepareImageForTensorflow = (imageData: string): Promise<HTMLImageElement> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    
-    img.onload = () => resolve(img);
-    img.onerror = (err) => reject(err);
-    
-    img.src = imageData;
-  });
-}; 
