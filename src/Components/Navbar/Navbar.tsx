@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import NotificationIcon from '../Notification/NotificationIcon';
 
 interface User {
   id?: string;
@@ -77,6 +78,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
               </>
             ) : (
               <>
+                <div className="mr-3">
+                  <NotificationIcon userId={user.id} />
+                </div>
                 <div className="relative group">
                   <Link to="/profile" className="flex items-center text-gray-700 hover:text-purple-600 px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                     {user.name || 'Profil'}
@@ -124,6 +128,10 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
             </>
           ) : (
             <>
+              <div className="flex items-center px-3 py-2">
+                <NotificationIcon userId={user.id} />
+                <span className="ml-2 text-gray-700">Bildirimler</span>
+              </div>
               <Link to="/profile" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Profilim</Link>
               <Link to="/my-ads" className="block text-gray-700 hover:text-purple-600 hover:bg-indigo-50 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">İlanlarım</Link>
               <Link to="/create-ad" className="block bg-purple-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-purple-700 transition-colors duration-200 mt-2 shadow-md">
@@ -144,4 +152,3 @@ const Navbar: React.FC<NavbarProps> = ({ user, setUser }) => {
 };
 
 export default Navbar;
-

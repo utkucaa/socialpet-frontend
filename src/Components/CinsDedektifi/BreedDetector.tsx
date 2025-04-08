@@ -59,20 +59,42 @@ const BreedDetector: React.FC = () => {
       const formData = new FormData();
       formData.append('image', blob, 'dog-image.jpg');
       
+      // Get auth token if available
+      const token = localStorage.getItem('token');
+      
       // Make API request
       const response = await fetch('http://localhost:8080/api/v1/dog-breed-analyzer/analyze-dog', {
         method: 'POST',
         body: formData,
         headers: {
-          'Origin': window.location.origin
+          'Origin': window.location.origin,
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
       });
       
       if (!response.ok) {
-        throw new Error('API yanıt vermedi');
+        if (response.status === 401) {
+          throw new Error('Yetkilendirme hatası. Lütfen giriş yapın veya yöneticiye başvurun.');
+        }
+        throw new Error(`API yanıt vermedi (${response.status})`);
       }
       
-      const data = await response.json();
+      // Safely parse the JSON response
+      let data;
+      try {
+        const responseText = await response.text();
+        if (!responseText) {
+          throw new Error('API boş yanıt döndürdü');
+        }
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Error parsing dog breed API response:', parseError);
+        throw new Error('API yanıtı anlaşılamadı');
+      }
+      
+      if (!data || !data.primaryBreed) {
+        throw new Error('API geçerli bir köpek cinsi döndürmedi');
+      }
       
       // Get Turkish breed name from JSON file
       const breedNameResponse = await fetch('/breed_names_tr.json');
@@ -314,7 +336,7 @@ const BreedDetector: React.FC = () => {
                 </div>
               </div>
               <div className="result-footer">
-                <p>Not: Bu sonuçlar Tensorflow Modeli tahminidir ve %100 doğru olmayabilir.
+                <p>Not: Bu sonuçlar {result.type === 'Kedi' ? 'OpenAI' : 'Tensorflow'} Modeli tahminidir ve %100 doğru olmayabilir.
                 </p>
               </div>
             </div>

@@ -325,7 +325,7 @@ const HomePage: React.FC = () => {
             </div>
             
             <div className="mt-8 text-center">
-              <p className="text-gray-light">© 2023 SocialPet. Tüm hakları saklıdır.</p>
+              <p className="text-gray-light">© 2025 SocialPet. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </div>

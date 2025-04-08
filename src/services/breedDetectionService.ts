@@ -36,6 +36,7 @@ export const analyzeCatBreed = async (imageData: string): Promise<BreedDetection
       
       console.log('[BreedDetectionService] Sending request to API endpoint: http://localhost:8080/api/v1/breed-analyzer/analyze');
       
+      // Remove token-based authorization as the endpoint might be public
       // Make the API request
       const apiResponse = await axios.post('http://localhost:8080/api/v1/breed-analyzer/analyze', 
         formData,
@@ -52,7 +53,41 @@ export const analyzeCatBreed = async (imageData: string): Promise<BreedDetection
         throw new Error('API response is empty');
       }
       
-      const responseData = JSON.parse(apiResponse.data.result);
+      // Handle error in API response
+      if (apiResponse.data.error) {
+        console.error('[BreedDetectionService] API returned error:', apiResponse.data.error);
+        if (apiResponse.data.error.includes('401 Unauthorized')) {
+          return {
+            type: 'Kedi',
+            breed: 'Yetkilendirme hatası. Lütfen giriş yapın veya yöneticiye başvurun.',
+            confidence: 0
+          };
+        }
+        return {
+          type: 'Kedi',
+          breed: apiResponse.data.breed || 'Tanımlanamadı',
+          confidence: apiResponse.data.confidence || 0
+        };
+      }
+      
+      let responseData;
+      // Safely parse JSON data
+      try {
+        // Check if result exists and is a string before parsing
+        if (apiResponse.data.result && typeof apiResponse.data.result === 'string') {
+          responseData = JSON.parse(apiResponse.data.result);
+        } else if (typeof apiResponse.data === 'object') {
+          // If result is not a string but response is an object, use it directly
+          responseData = apiResponse.data;
+        } else {
+          // Fall back to empty object if we can't parse anything
+          responseData = {};
+        }
+      } catch (parseError) {
+        console.error('[BreedDetectionService] Error parsing response:', parseError);
+        responseData = {}; // Use empty object if parsing fails
+      }
+      
       const result = {
         type: 'Kedi',
         breed: responseData.breed || responseData.result || responseData.breedName || 'Tanımlanamadı',
