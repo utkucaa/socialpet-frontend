@@ -712,6 +712,17 @@ function BusinessDetail({ business, onClose }: { business: Business; onClose: ()
                     </Marker>
                   </MapContainer>
                 </div>
+                <div className="mt-2">
+                  <a 
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${center[0]},${center[1]}&destination_place_id=${business.place_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
+                  >
+                    <MapIcon className="h-5 w-5" />
+                    <span>Yol Tarifi Al</span>
+                  </a>
+                </div>
               </div>
             )}
           </div>
